@@ -19,7 +19,6 @@
           <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.edit.info = false">
           </UButton>
         </template>
-
         <AuthEditProfile />
       </UiContent>
     </UModal>
@@ -65,7 +64,7 @@ const menuUser = computed(() => {
     list.push([{
       label: 'Quản trị viên',
       icon: 'i-bx-shield-quarter',
-      click: () => navigateTo('/admin/statitic')
+      click: () => navigateTo('/admin/statistic')
     }])
   }
 

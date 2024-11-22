@@ -8,7 +8,7 @@
             <LayoutPublicNavSlide class="mr-2 " />
             <UiFlex class="hidden md:flex">
                 <NuxtLink to="/">
-                    <UiLogo />
+                    <UiLogo color="primary"/>
                 </NuxtLink>
             </UiFlex>
             <UiFlex justify="end" items="center" class="gap-1 ml-auto">

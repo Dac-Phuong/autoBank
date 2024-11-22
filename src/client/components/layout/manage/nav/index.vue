@@ -29,6 +29,7 @@
       <template #tab-1><UVerticalNavigation :links="navItems[1].children" @click="emit('to')"/></template>
       <template #tab-2><UVerticalNavigation :links="navItems[2].children" @click="emit('to')"/></template>
       <template #tab-3><UVerticalNavigation :links="navItems[3].children" @click="emit('to')"/></template>
+      <template #tab-4><UVerticalNavigation :links="navItems[4].children" @click="emit('to')"/></template>
     </UAccordion>
   </template>
   
@@ -46,12 +47,11 @@
       ]
     },
     {
-      label: 'Tin tức',
+      label: 'Tài liệu',
       icon: 'line-md:text-box-twotone-to-text-box-multiple-twotone-transition',
       defaultOpen: true,
       slot: 'tab-1',
       children: [
-        { label: 'Danh mục', to: '/admin/news/category' },
         { label: 'Danh sách', to: '/admin/news' }
       ]
     },
@@ -61,7 +61,7 @@
       defaultOpen: true,
       slot: 'tab-2',
       children: [
-        { label: 'Tài khoản', to: '/admin/user' },
+        { label: 'Danh sách', to: '/admin/user' },
       ]
     },
     {
@@ -73,6 +73,16 @@
         { label: 'Cài đặt', to: '/admin/payment/config' },
         { label: 'Kênh nạp', to: '/admin/payment/gate' },
         { label: 'Danh sách', to: '/admin/payment/' },
+      ]
+    },
+    {
+      label: 'Auto Bank',
+      icon: 'tabler:building-bank',
+      defaultOpen: true,
+      slot: 'tab-4',
+      children: [
+        { label: 'Ngân hàng', to: '/admin/autobank/bank' },
+        { label: 'Danh sách', to: '/admin/autobank' },
       ]
     }
   ]

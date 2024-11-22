@@ -5,7 +5,7 @@
                 <div class="hidden xl:flex flex-col min-h-screen h-full pt-5">
                     <UiLogo class="hidden xl:block" />
                     <div class="my-auto">
-                        <UiImg src="/images/illustration.svg" class="mt-5 -intro-x w-1/2 -mt-16 md:-mt-10" />
+                        <img src="/images/illustration.svg" class="mt-5 -intro-x w-1/2 -mt-16 md:-mt-10" />
                         <UiText tag="h1"
                             class="break-words text-3xl text-white dark:text-white-400 font-bold italic mt-10">
                             Giải pháp <br /> thanh toán tự động.
@@ -60,7 +60,6 @@ const onSubmit = async () => {
         router.push('/')
         await authStore.setAuth()
         loading.value = false
-        
     } catch (error) {
         loading.value = false
     }
