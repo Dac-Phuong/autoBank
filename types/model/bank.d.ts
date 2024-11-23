@@ -6,7 +6,8 @@ export interface IDBBank {
   updatedAt: Date;
   name: string;
   image: string;
-  status: boolean;
+  slug: string;
+  status: Number;
   display: boolean;
 }
 

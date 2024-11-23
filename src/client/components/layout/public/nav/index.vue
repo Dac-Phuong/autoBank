@@ -1,8 +1,7 @@
 <template>
-  <UiLogo class="hidden xl:block mb-4" />
-  <UVerticalNavigation :links="links" :ui="{margin: 'mt-4', padding: 'py-3' }"/>
+  <UiLogo class="hidden xl:block mb-6 pb-3 border-b border-gray-100 " />
+  <UVerticalNavigation :links="links" :ui="{ base:'mb-1', padding: 'py-3', color: 'text-white', inactive: 'text-white', icon: 'text-white' }" />
 </template>
-
 <script setup>
 const emit = defineEmits(['to'])
 const links = [
@@ -11,8 +10,6 @@ const links = [
     icon: 'i-heroicons-home',
     slot: 'tab-0',
     to: '/',
-    size: 'lg'
-
   },
   {
     label: 'Nạp xu',

@@ -18,15 +18,17 @@
                 </template>
 
                 <template #image-data="{ row }">
-                    {{ row.image || '...' }}
+                    <UiImg :src="row.image" class="w-[80px]" w="16" h="8" />
                 </template>
 
                 <template #status-data="{ row }">
-                    {{ row.status || '...' }}
+                    <UBadge :color="row.status == 1 ? 'red' : 'primary'"  variant="soft">
+                        {{ row.status == 1 ? 'Đóng' : 'Mở' }}
+                    </UBadge>
                 </template>
 
                 <template #display-data="{ row }">
-                    <UBadge :color="row.display ? 'red' : 'gray'">
+                    <UBadge :color="row.display ? 'red' : 'gray'"  variant="soft">
                         {{ row.display ? 'Khóa' : 'Không' }}
                     </UBadge>
                 </template>
@@ -54,11 +56,16 @@
                 <UFormGroup label="Tên ngân hàng">
                     <UInput size="lg" class="mb-3" v-model="stateAddBank.name" />
                 </UFormGroup>
-                <UFormGroup label="hình ảnh">
-                    <UInput size="lg" class="mb-3" v-model="stateAddBank.image" />
+                <UFormGroup label="hình ảnh" class="mb-3">
+                    <UiUploadImage v-model="stateAddBank.image">
+                        <template #default="{ select, loading }">
+                            <UInput size="lg" :model-value="stateAddBank.image" :loading="loading" readonly
+                                @click="select" />
+                        </template>
+                    </UiUploadImage>
                 </UFormGroup>
 
-                <UFormGroup label="Hoạt động">
+                <UFormGroup label="Trạng thái" class="mb-3">
                     <SelectStatus v-model="stateAddBank.status" />
                 </UFormGroup>
 
@@ -73,35 +80,34 @@
             </UForm>
         </UModal>
         <!-- Modal Edit Auth-->
-        <!-- <UModal v-model="modal.editAuth" preventClose>
-            <UForm :state="stateEditAuth" @submit="editAuthAction" class="p-4">
-                <UFormGroup label="Email">
-                    <UInput size="lg" class="mb-3" v-model="stateEditAuth.email" />
+        <UModal v-model="modal.editBank" preventClose>
+            <UForm :state="stateEditBank" @submit="editBankAction" class="p-4">
+                <UFormGroup label="Tên ngân hàng">
+                    <UInput size="lg" class="mb-3" v-model="stateEditBank.name" />
+                </UFormGroup>
+                <UFormGroup label="hình ảnh" class="mb-3">
+                    <UiUploadImage v-model="stateEditBank.image">
+                        <template #default="{ select, loading }">
+                            <UInput size="lg" :model-value="stateEditBank.image" :loading="loading" readonly
+                                @click="select" />
+                        </template>
+                    </UiUploadImage>
                 </UFormGroup>
 
-                <UFormGroup label="Số điện thoại">
-                    <UInput size="lg" class="mb-3" v-model="stateEditAuth.phone" />
+                <UFormGroup label="Trạng thái" class="mb-3">
+                    <SelectStatus v-model="stateEditBank.status" />
                 </UFormGroup>
 
-                <UFormGroup label="Mật khẩu">
-                    <UInput size="lg" class="mb-3" v-model="stateEditAuth.password" type="password" />
+                <UFormGroup label="Hiển thị" class="mb-3">
+                    <SelectDisplay v-model="stateEditBank.display" />
                 </UFormGroup>
-
-                <UFormGroup label="Quyền" class="mb-3">
-                    <SelectAuthType v-model="stateEditAuth.type" />
-                </UFormGroup>
-
-                <UFormGroup label="Khóa">
-                    <SelectAuthBlock v-model="stateEditAuth.block" />
-                </UFormGroup>
-
                 <UiFlex justify="end" class="mt-4">
-                    <UButton type="submit" :loading="loading.editAuth">Sửa</UButton>
-                    <UButton color="gray" @click="modal.editAuth = false" :disabled="loading.editAuth" class="ml-1">Đóng
+                    <UButton type="submit" :loading="loading.editBank">Lưu</UButton>
+                    <UButton color="gray" @click="modal.editBank = false" :disabled="loading.editBank" class="ml-1">Đóng
                     </UButton>
                 </UiFlex>
             </UForm>
-        </UModal> -->
+        </UModal>
 
     </UiContent>
 </template>
@@ -119,40 +125,38 @@ const modal = ref({
     editBank: false,
 })
 
-watch(modal.value.addBank, () => {
-    console.log(modal.value.addBank);
-    
-})
+watch(() => modal.value.addBank, (val) => !val && (stateAddBank.value = {
+    name: null,
+    image: null,
+    status: undefined,
+    display: undefined,
+}))
 // State
 const stateAddBank = ref({
     name: null,
     image: null,
-    status: null,
-    display: null,
+    status: undefined,
+    display: undefined,
 })
 const stateEditBank = ref({
     _id: null,
     name: null,
     image: null,
-    status: null,
-    display: null,
+    status: undefined,
+    display: undefined,
 })
 const actions = (row) => [
     [{
         label: 'Sửa thông tin',
         icon: 'i-bx-pencil',
         click: () => {
-            Object.keys(stateEditAuth.value).forEach(key => stateEditAuth.value[key] = row[key])
-            modal.value.editAuth = true
+            Object.keys(stateEditBank.value).forEach(key => stateEditBank.value[key] = row[key])
+            modal.value.editBank = true
         }
     }, {
         label: 'Xóa ',
         icon: 'i-bx-trash',
-        click: () => {
-            stateEditCurrency.value._id = row._id
-            stateEditCurrency.value.type = 'plus'
-            modal.value.editCurrency = true
-        }
+        click: () =>  deleteBankAction(row._id)
     }]
 ]
 const columns = [
@@ -167,7 +171,7 @@ const columns = [
         key: 'status',
         label: 'Trạng thái',
     },
-     {
+    {
         key: 'display',
         label: 'Hiện',
     },
@@ -205,13 +209,49 @@ watch(() => page.value.search.key, (val) => !val && getList())
 const getList = async () => {
     try {
         loading.value.load = true
-        const data = await useAPI('admin/user/list', JSON.parse(JSON.stringify(page.value)))
+        const data = await useAPI('admin/bank/list', JSON.parse(JSON.stringify(page.value)))
         loading.value.load = false
         list.value = data.list
         page.value.total = data.total
     }
     catch (e) {
         loading.value.load = false
+    }
+}
+const addBankAction = async () => {
+    try {
+        loading.value.addBank = true
+        await useAPI('admin/bank/add', JSON.parse(JSON.stringify(stateAddBank.value)))
+        loading.value.addBank = false
+        modal.value.addBank = false
+        getList()
+    }
+    catch (e) {
+        loading.value.addBank = false
+    }
+}
+const editBankAction = async () => {
+    try {
+        loading.value.editBank = true
+        await useAPI('admin/bank/edit', JSON.parse(JSON.stringify(stateEditBank.value)))
+        loading.value.editBank = false
+        modal.value.editBank = false
+        getList()
+    }
+    catch (e) {
+        loading.value.editBank = false
+    }
+}
+const deleteBankAction = async (_id) => {
+    try {
+        loading.value.editBank = true
+        await useAPI('admin/bank/del',{_id})
+        loading.value.editBank = false
+        modal.value.editBank = false
+        getList()
+    }
+    catch (e) {
+        loading.value.editBank = false
     }
 }
 getList()

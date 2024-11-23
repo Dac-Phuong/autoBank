@@ -4,8 +4,9 @@ export const DBBank = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBBank>({ 
     name: { type: String },
     display: { type: Boolean, default: false },
-    status: { type: Boolean, default: false },
+    status: { type: Number, default: 0 },
     image: { type: String },
+    slug: { type: String },
   }, {
     timestamps: true
   })

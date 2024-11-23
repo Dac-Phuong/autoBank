@@ -1,11 +1,11 @@
 <template>
-    <USelectMenu v-model="display" size="lg" value-attribute="value" placeholder="Hiển thị" :options="[
-        { label: 'Có', value: false },
-        { label: 'Không', value: true },
+    <USelectMenu v-model="display" size="lg" value-attribute="value" placeholder="Trạng thái" :options="[
+        { label: 'Mở', value: 0 },
+        { label: 'Đóng', value: 1 },
     ]">
         <template #label>
             <span v-if="display !== undefined">{{ displayFormat[display]?.label }}</span>
-            <span v-else>Hoạt động</span>
+            <span v-else>Mở</span>
         </template>
 
         <template #option="{ option: option }">
@@ -24,7 +24,7 @@ const display = computed({
 })
 
 const displayFormat = {
-    false: { label: 'Hoạt động', color: 'gray' },
-    true: { label: 'Không', color: 'green' },
+    0: { label: 'Mở', color: 'gray' },
+    1: { label: 'Đóng', color: 'green' },
 }
 </script>

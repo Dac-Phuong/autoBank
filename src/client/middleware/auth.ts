@@ -1,8 +1,7 @@
 export default defineNuxtRouteMiddleware(async () => {
   try {
     const authStore = useAuthStore();
-    if (!authStore.isLogin || !authStore.profile)
-      throw "Vui lòng đăng nhập trước";
+    if (!authStore.isLogin || !authStore.profile) return
   } catch (e: any) {
     return navigateTo("/auth/login");
   }

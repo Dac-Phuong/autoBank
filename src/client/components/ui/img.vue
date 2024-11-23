@@ -4,7 +4,7 @@
     :style="`aspect-ratio: ${w} / ${h}`">
     <NuxtImg 
       :src="img(src)" 
-      class="object-cover w-full h-full select-none"
+      class="w-full h-full select-none"
       :sizes="props.imgSize"
       :width="props.imgW"
       :height="props.imgH"
@@ -13,7 +13,7 @@
       :fit="fit"
       :loading="!!preload ? 'eager' : 'lazy'"
       :preload="preload"
-      placeholder="/images/placeholder.png"
+      placeholder="/images/null.webp"
       :alt="props.alt" 
       @load="onLoad"
     />

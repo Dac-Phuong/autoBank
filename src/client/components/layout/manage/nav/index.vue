@@ -70,9 +70,8 @@
       defaultOpen: true,
       slot: 'tab-3',
       children: [
-        { label: 'Cài đặt', to: '/admin/payment/config' },
-        { label: 'Kênh nạp', to: '/admin/payment/gate' },
-        { label: 'Danh sách', to: '/admin/payment/' },
+        { label: 'Kênh nạp', to: '/admin/gate' },
+        { label: 'Danh sách', to: '/admin/payment' },
       ]
     },
     {
@@ -81,7 +80,7 @@
       defaultOpen: true,
       slot: 'tab-4',
       children: [
-        { label: 'Ngân hàng', to: '/admin/autobank/bank' },
+        { label: 'Ngân hàng', to: '/admin/bank' },
         { label: 'Danh sách', to: '/admin/autobank' },
       ]
     }
