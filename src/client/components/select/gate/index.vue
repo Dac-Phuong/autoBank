@@ -1,29 +1,52 @@
 <template>
-    <USelectMenu v-model="type" size="lg" value-attribute="value" placeholder="Chọn loại kênh" :options="[
-        { label: 'Ngân hàng', value: 0 },
-        { label: 'Momo', value: 1 }]">
-        <template #label>
-            <span v-if="type !== undefined">{{ typeFormat[type]?.label }}</span>
-            <span v-else>Chọn loại kênh</span>
-        </template>
-
-        <template #option="{ option: option }">
-            <span>{{ typeFormat[option.value].label }}</span>
-        </template>
-    </USelectMenu>
+  <USelectMenu
+    v-model="selectedGateId"
+    :options="options"
+    size="lg"
+    value-attribute="_id"
+    option-attribute="name"
+    :disabled="options.length == 0"
+    :loading="loading"
+  >
+    <template #label>
+      <UiText mini>{{ selectedGate ? selectedGate.name : "Chọn kênh nạp" }}</UiText>
+    </template>
+  </USelectMenu>
 </template>
 
 <script setup>
-const props = defineProps(['modelValue'])
-const emit = defineEmits(['update:modelValue'])
+const props = defineProps({
+  modelValue: String,
+  options: {
+    type: Array,
+    default: () => [],
+  },
+});
 
-const type = computed({
-    get: () => props.modelValue,
-    set: (value) => emit('update:modelValue', value)
-})
+const emit = defineEmits(["update:modelValue", "update:gate"]);
 
-const typeFormat = {
-    0: { label: 'Ngân hàng' },
-    1: { label: 'Momo' },
-}
+const loading = ref(true);
+const options = ref(props.options);
+const selectedGateId = ref(props.modelValue);
+
+const selectedGate = computed(() => options.value.find((i) => i._id === selectedGateId.value));
+
+watch(selectedGateId, (value) => {
+  emit("update:modelValue", value);
+  emit("update:gate", options.value.find((i) => i._id === value));
+});
+
+const getGate = async () => {
+  try {
+    loading.value = true;
+    const list = await useAPI("client/gate/select");
+    options.value = list;
+    loading.value = false;
+  } catch (e) {
+    loading.value = false;
+  }
+};
+
+getGate();
 </script>
+

@@ -52,7 +52,8 @@
       defaultOpen: true,
       slot: 'tab-1',
       children: [
-        { label: 'Danh sách', to: '/admin/news' }
+        { label: 'Danh mục', to: '/admin/docs/category' },
+        { label: 'Danh sách', to: '/admin/docs' }
       ]
     },
     {

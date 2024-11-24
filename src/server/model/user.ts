@@ -11,7 +11,7 @@ export const DBUser = (mongoose : Mongoose) => {
     currency: {
       coin: { type: Number, default: 0, index: true }
     },
-    type: { type: Number, default: 0, index: true }, // 0 - Member, 1 - Smod, 100 - Admin
+    type: { type: Number, default: 0, index: true }, // 0 - Member, 100 - Admin
     token: { type: String },
   }, {
     timestamps: true
