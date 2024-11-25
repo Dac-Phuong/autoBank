@@ -11,4 +11,16 @@ export interface IDBBank {
   display: boolean;
 }
 
+export interface IDBBankAccount {
+  _id: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+  name: string;
+  number: Number;
+  password: string;
+  bank: Types.ObjectId;
+  status: Number;
+}
+
+
 

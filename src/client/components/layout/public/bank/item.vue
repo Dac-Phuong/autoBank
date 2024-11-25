@@ -15,7 +15,7 @@
 const props = defineProps(['item'])
 const open = async (slug, status) => {
     if(status !== 0) return useNotify().error('Ngân hàng đang tạm đóng')
-    await navigateTo(`/${slug}`)
+    await navigateTo(`/bank/${slug}`)
 }
 </script>
 

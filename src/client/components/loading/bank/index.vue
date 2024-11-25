@@ -8,7 +8,7 @@
         body: { padding: 'p-0 sm:p-0' },
     }">
         <UiFlex justify="between">
-            <USkeleton class="w-full h-full rounded w-12 h-12" />
+            <USkeleton class="rounded w-12 h-12" />
             <USkeleton class="w-32 h-6 mb-1" />
         </UiFlex>
         <div class="py-4">

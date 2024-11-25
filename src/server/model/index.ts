@@ -1,7 +1,7 @@
 import type { Mongoose } from 'mongoose'
 import { IGlobalDB } from './../../../types/model/index.d';
 import { DBUser } from './user'
-import { DBBank } from './bank'
+import { DBBank, DBBankAccount } from './bank'
 import { DBGate } from './gate';
 
 
@@ -10,5 +10,6 @@ export default (mongoose : Mongoose) : IGlobalDB => {
     User: DBUser(mongoose),
     Bank: DBBank(mongoose),
     Gate: DBGate(mongoose),
+    BankAccount: DBBankAccount(mongoose),
   }
 }
