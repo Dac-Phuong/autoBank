@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     return sendStream(event, createReadStream(filePath))
   }
   catch(e:any){
-    return res(event, { code: 404, message: 'Tài liệu không tồn tại' })
+    return resp(event, { code: 404, message: 'Tài liệu không tồn tại' })
   }
 })
 

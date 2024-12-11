@@ -15,7 +15,7 @@ export default async (event: H3Event, throwError : boolean = true) : Promise<IAu
     if(!user) throw 'Xác thực tài khoản không thành công'
     if(user.token != token) throw 'Tài khoản đang đăng nhập ở nơi khác, vui lòng đăng nhập lại'
     
-    const result = { 
+    const result:any = { 
       _id: user._id,
       account: user.account,
       email: user.email,

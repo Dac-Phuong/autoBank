@@ -42,6 +42,9 @@
     </div>
 </template>
 <script setup>
+definePageMeta({
+    layout: 'auth',
+});
 // state
 const state = ref({
     account: undefined,

@@ -38,6 +38,9 @@
     </div>
 </template>
 <script setup>
+definePageMeta({
+    layout: 'auth',
+});
 // state
 const loading = ref(false)
 const router = useRouter()
