@@ -13,35 +13,6 @@
       </template>
     </UPopover>
 
-    <UModal v-model="modal.edit.info" preventClose>
-      <UiContent title="Chỉnh Sửa" sub="Cập nhật thông tin cá nhân" class="p-4" >
-        <template #more>
-          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.edit.info = false">
-          </UButton>
-        </template>
-        <AuthEditProfile />
-      </UiContent>
-    </UModal>
-
-    <UModal v-model="modal.edit.password" preventClose>
-      <UiContent title="Bảo Mật" sub="Thay đổi mật khẩu" class="p-4" >
-        <template #more>
-          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.edit.password = false">
-          </UButton>
-        </template>
-        <AuthEditPassword @done="modal.edit.password = false" />
-      </UiContent>
-    </UModal>
-
-    <UModal v-model="modal.history.wheel" :ui="{ width: 'sm:max-w-[900px]' }">
-      <UiContent title="Lịch Sử Quay" sub="Lich sử quay thưởng của bạn"  class="p-4">
-        <template #more>
-          <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.history.wheel = false">
-          </UButton>
-        </template>
-      </UiContent>
-    </UModal>
-
   </UiFlex>
 </template>
 <script setup>
