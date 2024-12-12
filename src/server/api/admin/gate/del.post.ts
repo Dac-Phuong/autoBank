@@ -12,8 +12,8 @@ export default defineEventHandler(async (event) => {
     const gate = await DB.Gate.findOne({ _id: _id }).select('name')
     if(!gate) throw 'Kênh không tồn tại'
 
-    const order = await DB.Order.countDocuments({ gate: _id })
-    if(order > 0) throw 'Không thể xóa kênh đã có giao dịch'
+    // const order = await DB.Order.countDocuments({ gate: _id })
+    // if(order > 0) throw 'Không thể xóa kênh đã có giao dịch'
 
     await DB.Gate.deleteOne({ _id: _id })
     return resp(event, { message: 'Xóa kênh thành công' })

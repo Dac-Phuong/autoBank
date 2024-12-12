@@ -16,6 +16,7 @@ export default defineEventHandler(async (event) => {
         { account: account }
       ]
     }).select('account password type block token email') as IDBUser
+      
     if(!user) throw 'Tài khoản không tồn tại'
     if(user.password != md5(password)) throw 'Mật khẩu không chính xác'
     if(user.block) throw 'Tài khoản của bạn bị đã khóa'

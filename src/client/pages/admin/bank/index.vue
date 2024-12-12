@@ -1,5 +1,5 @@
 <template>
-    <UiContent title="Bank" no-dot sub="Quản lý ngân hàng">
+    <UiContent title="Bank" size="2xl" sub="Quản lý ngân hàng">
         <UiFlex class="mb-4 gap-1">
             <USelectMenu v-model="page.size" :options="[5, 10, 20, 50, 100]" />
             <UForm :state="page" @submit="page.current = 1, getList()">
@@ -7,7 +7,7 @@
                     <UInput v-model="page.search.key" placeholder="Tìm kiếm..." icon="i-bx-search" size="sm" />
                 </UiFlex>
             </UForm>
-            <UButton color="gray" class="ml-auto" @click="modal.addBank = true">Thêm mới</UButton>
+            <UButton color="primary" class="ml-auto" @click="modal.addBank = true">Thêm mới</UButton>
         </UiFlex>
         <!-- Table -->
         <UCard :ui="{ body: { padding: 'p-0 sm:p-0 relative' } }">
@@ -22,13 +22,13 @@
                 </template>
 
                 <template #status-data="{ row }">
-                    <UBadge :color="row.status == 1 ? 'red' : 'primary'"  variant="soft">
+                    <UBadge :color="row.status == 1 ? 'red' : 'primary'" variant="soft">
                         {{ row.status == 1 ? 'Đóng' : 'Mở' }}
                     </UBadge>
                 </template>
 
                 <template #display-data="{ row }">
-                    <UBadge :color="row.display ? 'red' : 'gray'"  variant="soft">
+                    <UBadge :color="row.display ? 'red' : 'gray'" variant="soft">
                         {{ row.display ? 'Khóa' : 'Không' }}
                     </UBadge>
                 </template>
@@ -50,7 +50,7 @@
             <USelectMenu v-model="selectedColumns" :options="columns" multiple placeholder="Chọn cột" />
             <UPagination v-model="page.current" :page-count="page.size" :total="page.total" :max="4" />
         </UiFlex>
-        <!-- Modal Add Auth-->
+        <!-- Modal Add -->
         <UModal v-model="modal.addBank" preventClose>
             <UForm :state="stateAddBank" @submit="addBankAction" class="p-4">
                 <UFormGroup label="Tên ngân hàng">
@@ -79,7 +79,7 @@
                 </UiFlex>
             </UForm>
         </UModal>
-        <!-- Modal Edit Auth-->
+        <!-- Modal Edit -->
         <UModal v-model="modal.editBank" preventClose>
             <UForm :state="stateEditBank" @submit="editBankAction" class="p-4">
                 <UFormGroup label="Tên ngân hàng">
@@ -108,7 +108,33 @@
                 </UiFlex>
             </UForm>
         </UModal>
+        <!-- Modal Edit -->
+        <UModal v-model="modal.editOptions" preventClose>
+            <UForm :state="stateOptions" @submit="editOptions" class="p-4">
+                <UiText class="mb-1 text-gray-600" weight="bold">Thông tin giá thuê</UiText>
+                <UiFlex class="align-center pt-2" v-for="(item, index) in stateOptions.options" :key="index">
 
+                    <UInput v-model="item.days" required type="number" class="w-2/4 mb-2" placeholder="Nhập số ngày" />
+                    <UInput v-model="item.money" type="number" required class="w-3/4 mb-2 ml-2" placeholder="Nhập giá tiền" />
+
+                    <UButton type="button" icon="i-heroicons-trash" @click="stateOptions.options.splice(index, 1)"
+                        color="red" class="ml-2 mb-2 w-[40px] h-[40px] flex items-center justify-center" />
+                </UiFlex>
+
+                <UiFlex class="mt-4 align-center">
+                    <UButton type="button" size="sm" @click="stateOptions.options.push({ days: '', money: '' })"
+                        color="primary" class="ml-2 mt-2 flex items-center justify-center">Thêm</UButton>
+                    <UiFlex class="ml-auto">
+                        <UButton type="submit" :loading="loading.options">Lưu</UButton>
+                        <UButton color="gray" @click="modal.editOptions = false" :disabled="loading.options"
+                            class="ml-1">
+                            Đóng
+                        </UButton>
+                    </UiFlex>
+                </UiFlex>
+
+            </UForm>
+        </UModal>
     </UiContent>
 </template>
 <script setup>
@@ -118,25 +144,28 @@ const loading = ref({
     load: true,
     addBank: false,
     editBank: false,
+    options: false,
 })
 // Modal
 const modal = ref({
     addBank: false,
     editBank: false,
+    editOptions: false,
 })
 
 watch(() => modal.value.addBank, (val) => !val && (stateAddBank.value = {
     name: null,
     image: null,
     status: undefined,
-    display: undefined,
+    display: true,
 }))
+
 // State
 const stateAddBank = ref({
     name: null,
     image: null,
     status: undefined,
-    display: undefined,
+    display: true,
 })
 const stateEditBank = ref({
     _id: null,
@@ -144,6 +173,13 @@ const stateEditBank = ref({
     image: null,
     status: undefined,
     display: undefined,
+})
+const stateOptions = ref({
+    _id: null,
+    options: [{
+        days: '',
+        money: ''
+    }],
 })
 const actions = (row) => [
     [{
@@ -153,10 +189,19 @@ const actions = (row) => [
             Object.keys(stateEditBank.value).forEach(key => stateEditBank.value[key] = row[key])
             modal.value.editBank = true
         }
+    },
+    {
+        label: 'Sửa giá thuê',
+        icon: 'i-bx-dollar',
+        click: () => {
+            stateOptions.value.options = row.options && row.options.length > 0 ? row.options : [{ days: '', money: '' }]
+            stateOptions.value._id = row._id
+            modal.value.editOptions = true
+        }
     }, {
         label: 'Xóa ',
         icon: 'i-bx-trash',
-        click: () =>  deleteBankAction(row._id)
+        click: () => deleteBankAction(row._id)
     }]
 ]
 const columns = [
@@ -242,10 +287,22 @@ const editBankAction = async () => {
         loading.value.editBank = false
     }
 }
+const editOptions = async () => {
+    try {
+        loading.value.options = true
+        await useAPI('admin/bank/option/edit', JSON.parse(JSON.stringify(stateOptions.value)))
+        loading.value.options = false
+        modal.value.editOptions = false
+        getList()
+    }
+    catch (e) {
+        loading.value.options = false
+    }
+}
 const deleteBankAction = async (_id) => {
     try {
         loading.value.editBank = true
-        await useAPI('admin/bank/del',{_id})
+        await useAPI('admin/bank/del', { _id })
         loading.value.editBank = false
         modal.value.editBank = false
         getList()

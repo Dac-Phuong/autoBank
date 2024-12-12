@@ -14,7 +14,7 @@
     </UPopover>
 
     <UModal v-model="modal.edit.info" preventClose>
-      <UiContent title="Chỉnh Sửa" sub="Cập nhật thông tin cá nhân" class="p-4" no-dot>
+      <UiContent title="Chỉnh Sửa" sub="Cập nhật thông tin cá nhân" class="p-4" >
         <template #more>
           <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.edit.info = false">
           </UButton>
@@ -24,7 +24,7 @@
     </UModal>
 
     <UModal v-model="modal.edit.password" preventClose>
-      <UiContent title="Bảo Mật" sub="Thay đổi mật khẩu" class="p-4" no-dot>
+      <UiContent title="Bảo Mật" sub="Thay đổi mật khẩu" class="p-4" >
         <template #more>
           <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.edit.password = false">
           </UButton>
@@ -34,7 +34,7 @@
     </UModal>
 
     <UModal v-model="modal.history.wheel" :ui="{ width: 'sm:max-w-[900px]' }">
-      <UiContent title="Lịch Sử Quay" sub="Lich sử quay thưởng của bạn" no-dot class="p-4">
+      <UiContent title="Lịch Sử Quay" sub="Lich sử quay thưởng của bạn"  class="p-4">
         <template #more>
           <UButton icon="i-bx-x" class="ml-auto" size="2xs" color="gray" square @click="modal.history.wheel = false">
           </UButton>

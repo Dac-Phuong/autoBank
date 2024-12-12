@@ -16,7 +16,6 @@ export default defineEventHandler(async (event) => {
       if(search.by == 'PHONE') match['phone'] = { $regex : search.key, $options : 'i' }
     }
     sorting[sort.column] = sort.direction == "desc" ? -1 : 1;
-    console.log(search);
 
     const list = await DB.User.aggregate([
       { $match: match },
@@ -37,7 +36,7 @@ export default defineEventHandler(async (event) => {
     ]);
     const total = await DB.User.countDocuments(match);
     return resp(event, { result: { list, total } });
-  } catch (error) {
+  } catch (error:any) {
     return resp(event, { code: 500, message: error.toString() });
   }
 });

@@ -8,7 +8,10 @@
             <LayoutPublicNavSlide class="mr-2 " />
             <UiFlex class="hidden md:flex">
                 <NuxtLink to="/">
-                    <UiLogo color="primary"/>
+                    <UiFlex>
+                        <UiText weight="bold" size="2xl" color="primary" class="italic">ENI</UiText>
+                        <UiText color="primary" class="ml-1 pt-1.5 italic" size="sm" weight="semibold">AUTOBANK </UiText>
+                    </UiFlex>
                 </NuxtLink>
             </UiFlex>
             <UiFlex justify="end" items="center" class="gap-1 ml-auto">

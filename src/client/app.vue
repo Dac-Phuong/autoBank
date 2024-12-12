@@ -2,8 +2,9 @@
   <NuxtLayout>
     <NuxtLoadingIndicator :height="2" />
     <NuxtPage />
-    <UNotifications />
   </NuxtLayout>
+  <UNotifications />
+
 </template>
 
 <script setup>

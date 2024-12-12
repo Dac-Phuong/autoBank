@@ -1,6 +1,6 @@
 <template>
     <UCard v-if="item" class="ItemBank relative mb-4">
-        <div class="relative z-10" @click="open(item.slug, item.status)">
+        <div class="relative z-10" @click="open(item.key, item.status)">
             <UiFlex justify="between">
                 <UiImg :src="item.image" w="1" h="1" class="w-12 h-12" />
                 <UBadge color="primary">{{ item.status == 0 ? 'Đã mở' : 'Chưa mở' }}</UBadge>
@@ -13,9 +13,10 @@
 
 <script setup>
 const props = defineProps(['item'])
-const open = async (slug, status) => {
+
+const open = async (key, status) => {
     if(status !== 0) return useNotify().error('Ngân hàng đang tạm đóng')
-    await navigateTo(`/bank/${slug}`)
+    await navigateTo(`/bank/${key}`)
 }
 </script>
 
@@ -27,18 +28,5 @@ const open = async (slug, status) => {
         scale: 1.05
         cursor: pointer
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1)
-    &::before 
-      content: ""
-      width: 90%
-      background: #f9fafc
-      box-shadow: 0 3px 20px rgba(0, 0, 0, 0.043)
-      border-radius: .375rem
-      height: 100%
-      margin-left: auto
-      margin-right: auto
-      margin-top: .75rem
-      position: absolute
-      right: 0
-      left: 0
-      z-index: 1
+    
 </style>

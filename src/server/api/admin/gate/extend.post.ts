@@ -4,7 +4,7 @@ import resp from "../../../utils/resp"
 export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
-    if(auth.type < 1) throw 'Bạn không phải quản trị viên'
+    if(auth.type !== 100) throw 'Bạn không phải quản trị viên'
 
     const body = await readBody(event)
     const { _id, key, qrcode } = body

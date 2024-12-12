@@ -1,5 +1,4 @@
 import type { IAuth } from "~~/types"
-import resp from "../../../utils/resp"
 
 export default defineEventHandler(async (event) => {
   try {

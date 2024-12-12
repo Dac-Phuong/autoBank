@@ -10,6 +10,7 @@ export interface IDBGate {
   person: string
   number: string
 
+  image:string
   key: string
   qrcode: string
   

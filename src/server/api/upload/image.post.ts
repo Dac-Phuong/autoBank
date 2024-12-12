@@ -21,10 +21,11 @@ const handler = multer({
     limits: {
       fileSize: 10 * 1024 * 1024, 
     },
+
     fileFilter: (req, file, cb) => {
       const fileType = file.mimetype.split('/')[0];
-      if (fileType !== 'image' && fileType !== 'svg') {
-        cb(new Error('Chỉ hỗ trợ tệp hình ảnh (jpg|jpeg|png|webp|gif|svg)'));
+      if (fileType !== 'image') {
+        cb(new Error('Chỉ hỗ trợ tệp hình ảnh (jpg|jpeg|png|webp|gif)'));
       } else {
         cb(null, true);
       }
@@ -33,8 +34,8 @@ const handler = multer({
 
 export default defineEventHandler(async (event) => {
   try {
+    await callNodeListener(handler.single('image') as any, event.node.req, event.node.res)
     // @ts-expect-error
-    await callNodeListener(handler.single('image'), event.node.req, event.node.res)
     const file = event.node.req.file
     console.log(file);
     

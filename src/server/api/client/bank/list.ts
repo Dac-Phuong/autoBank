@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
       {
         $project: {
           name: 1,
-          slug: 1,
+          key: 1,
           image: 1,
           status: 1,
           updatedAt: 1,

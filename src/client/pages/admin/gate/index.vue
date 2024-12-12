@@ -1,21 +1,21 @@
 <template>
-  <UiContent title="Gate" no-dot sub="Quản lý các kênh thanh toán">
+  <UiContent title="Gate" size="2xl" sub="Quản lý các kênh thanh toán">
     <UiFlex class="mb-4" justify="between">
-      <USelectMenu v-model="page.size" :options="[5,10,20,50,100]" class="mr-auto"/>
-      <UButton color="gray" @click="modal.add = true">Thêm mới</UButton>
+      <USelectMenu v-model="page.size" :options="[5, 10, 20, 50, 100]" class="mr-auto" />
+      <UButton color="primary" @click="modal.add = true">Thêm mới</UButton>
     </UiFlex>
 
     <!-- Table -->
     <UCard :ui="{ body: { padding: 'p-0 sm:p-0' } }">
       <LoadingTable v-if="loading.load" />
 
-      <UTable 
-        v-model:sort="page.sort"
-        :columns="selectedColumns" 
-        :rows="list"
-      >
+      <UTable v-model:sort="page.sort" :columns="selectedColumns" :rows="list">
         <template #type-data="{ row }">
           <UBadge variant="soft">{{ typeFormat[row.type] }}</UBadge>
+        </template>
+        
+        <template #image-data="{ row }">
+          <UiImg :src="row.image" class="w-[60px] h-[60px]" />
         </template>
 
         <template #order_count-data="{ row }">
@@ -36,7 +36,7 @@
 
         <template #actions-data="{ row }">
           <UDropdown :items="actions(row)">
-            <UButton color="gray" icon="i-bx-dots-horizontal-rounded" :disabled="loading.del"/>
+            <UButton color="gray" icon="i-bx-dots-horizontal-rounded" :disabled="loading.del" />
           </UDropdown>
         </template>
       </UTable>
@@ -54,7 +54,7 @@
         <UFormGroup class="mb-3" label="Loại">
           <SelectGateType v-model="stateAdd.type" />
         </UFormGroup>
-
+        
         <UFormGroup class="mb-3" label="Tên kênh">
           <UInput size="lg" v-model="stateAdd.name" />
         </UFormGroup>
@@ -65,6 +65,14 @@
 
         <UFormGroup class="mb-3" label="Người hưởng thụ">
           <UInput size="lg" v-model="stateAdd.person" />
+        </UFormGroup>
+
+        <UFormGroup label="Ảnh">
+          <UiUploadImage v-model="stateAdd.image">
+            <template #default="{ select, loading }">
+              <UInput :model-value="stateAdd.image" :loading="loading" readonly @click="select" />
+            </template>
+          </UiUploadImage>
         </UFormGroup>
 
         <UFormGroup class="mb-3" label="Hiển thị">
@@ -91,6 +99,14 @@
 
         <UFormGroup class="mb-3" label="Người hưởng thụ">
           <UInput size="lg" v-model="stateEdit.person" />
+        </UFormGroup>
+
+        <UFormGroup label="Ảnh">
+          <UiUploadImage v-model="stateEdit.image">
+            <template #default="{ select, loading }">
+              <UInput :model-value="stateEdit.image" :loading="loading" readonly @click="select" />
+            </template>
+          </UiUploadImage>
         </UFormGroup>
 
         <UFormGroup class="mb-3" label="Hiển thị">
@@ -135,24 +151,30 @@ const columns = [
   {
     key: 'type',
     label: 'Loại',
-  },{
+  },
+  {
     key: 'name',
     label: 'Tên kênh',
-  },{
+  },
+  {
+    key: 'image',
+    label: 'Hình ảnh',
+  },
+  {
     key: 'order_count',
     label: 'Đơn hàng',
-  },{
+  }, {
     key: 'order_money',
     label: 'Tổng nhận',
-  },{
+  }, {
     key: 'display',
     label: 'Hiển thị',
     sortable: true
-  },{
+  }, {
     key: 'updatedAt',
     label: 'Cập nhật',
     sortable: true
-  },{
+  }, {
     key: 'actions',
     label: 'Chức năng',
   }
@@ -180,6 +202,7 @@ const stateAdd = ref({
   name: null,
   person: null,
   number: null,
+  image: null,
   display: false,
 })
 
@@ -188,6 +211,7 @@ const stateEdit = ref({
   name: null,
   person: null,
   number: null,
+  image: null,
   display: null,
 })
 
@@ -236,20 +260,20 @@ const actions = (row) => [
       Object.keys(stateEdit.value).forEach(key => stateEdit.value[key] = row[key])
       modal.value.edit = true
     }
-  },{
+  }, {
     label: 'Sửa tiện ích',
     icon: 'i-bx-qr',
     click: () => {
       Object.keys(stateExtend.value).forEach(key => stateExtend.value[key] = row[key])
       modal.value.extend = true
     }
-  }],[{
+  }], [{
     label: 'Xóa kênh',
     icon: 'i-bx-trash',
     click: () => delAction(row._id)
   }]
 ]
- 
+
 // Fetch
 const getList = async () => {
   try {
@@ -262,7 +286,7 @@ const getList = async () => {
   }
   catch (e) {
     loading.value.load = false
-  } 
+  }
 }
 
 const addAction = async () => {

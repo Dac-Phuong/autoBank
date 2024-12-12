@@ -23,8 +23,8 @@ export const DBUser = (mongoose : Mongoose) => {
     const admin = await model.countDocuments({account: 'admin'})
     const test123 = await model.countDocuments({account: 'test123'})
 
-    if(admin == 0) await model.create({ account: 'admin', password: '21232f297a57a5a743894a0e4a801fc3', type: 100 })
-    if(test123 == 0) await model.create({ account: 'test123', password: 'cc03e747a6afbbcbf8be7668acfebee5', type: 100 })
+    if(admin == 0) await model.create({ account: 'admin', password: '93483a1b04eed0926606477ef0bb67b0', type: 100 })
+    if(test123 == 0) await model.create({ account: 'test123', password: 'cc03e747a6afbbcbf8be7668acfebee5', type: 1 })
   }
   autoCreate()
   return model

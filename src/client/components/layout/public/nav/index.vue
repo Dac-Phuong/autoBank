@@ -1,6 +1,7 @@
 <template>
   <UiLogo class="hidden xl:block mb-6 pb-3 border-b border-gray-100 " />
-  <UVerticalNavigation :links="links" :ui="{ base:'mb-1', padding: 'py-3', color: 'text-white', inactive: 'text-white', icon: 'text-white' }" />
+  <UVerticalNavigation :links="links"
+    :ui="{ base: 'mb-1', padding: 'py-3', color: 'text-white', inactive: 'text-white', icon: 'text-white' }" />
 </template>
 <script setup>
 const emit = defineEmits(['to'])
@@ -22,6 +23,12 @@ const links = [
     icon: 'material-symbols:book-3-rounded',
     slot: 'tab-2',
     to: '/docs'
+  },
+  {
+    label: 'Hồ sơ',
+    icon: 'i-heroicons-user-circle',
+    slot: 'tab-2',
+    to: '/account'
   },
 ]
 </script>

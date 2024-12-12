@@ -4,8 +4,8 @@ export interface IDBDocs {
     _id: Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
+    category: Types.ObjectId;
     name: string;
-    url: string;
     content: string;
     display: boolean;
 }

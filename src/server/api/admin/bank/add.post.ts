@@ -1,5 +1,6 @@
 import { defineEventHandler } from "h3";
 import formatVNString from "../../../utils/formatVNString";
+import { IAuth } from "~~/types";
 export default defineEventHandler(async (event) => {
   try {
     const user = (await getAuth(event)) as IAuth;
@@ -13,11 +14,11 @@ export default defineEventHandler(async (event) => {
     if (!!check) throw "Tên ngân hàng đã tồn tại";
 
     const key = formatVNString(event, name, "-");
-    body.slug = key;
+    body.key = key;
 
     await DB.Bank.create(body);
     return resp(event, { message: "Thêm thành công" });
-  } catch (error) {
+  } catch (error:any) {
     return resp(event, { code: 400, message: error.toString() });
   }
 });

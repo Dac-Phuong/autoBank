@@ -11,7 +11,8 @@ export default defineEventHandler(async (event) => {
     const sorting: any = {};
     const match: any = {};
     if (!!search.key) {
-      if (search.by == "NAME") match["name"] = { $regex: search.key.toLowerCase(), $options: "i" };
+      if (search.by == "NAME")
+        match["name"] = { $regex: search.key.toLowerCase(), $options: "i" };
     }
     sorting[sort.column] = sort.direction == "desc" ? -1 : 1;
 
@@ -20,11 +21,12 @@ export default defineEventHandler(async (event) => {
       {
         $project: {
           name: 1,
-          image:1,
-          status:1,
-          slug:1,
-          display:1,
+          image: 1,
+          status: 1,
+          key: 1,
+          display: 1,
           updatedAt: 1,
+          options:1
         },
       },
       { $sort: sorting },
@@ -33,7 +35,7 @@ export default defineEventHandler(async (event) => {
     ]);
     const total = await DB.Bank.countDocuments(match);
     return resp(event, { result: { list, total } });
-  } catch (error) {
+  } catch (error:any) {
     return resp(event, { code: 500, message: error.toString() });
   }
 });

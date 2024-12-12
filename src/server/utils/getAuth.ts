@@ -22,7 +22,7 @@ export default async (event: H3Event, throwError : boolean = true) : Promise<IAu
       type: user.type
     }
     event.context.auth = result
-    return result
+    return result as any
   }
   catch (e:any) {
     if(!!throwError) {

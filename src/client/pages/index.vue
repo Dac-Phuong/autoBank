@@ -1,23 +1,21 @@
 <template>
-    <div>
+    <div >
         <LayoutPublicHeader label="Tổng quan" />
-        <UiFlex class="gap-2 mb-4">
-            <UiText text="Thống kê tài khoản" weight="medium" color="secondary" size="lg" />
-        </UiFlex>
-        <div class="grid grid-cols-12 lg:gap-6 md:gap-4 gap-2" v-if="!!loading || !list">
-            <LoadingBank v-for="i in page.size" :key="i" class="xl:col-span-3 lg:col-span-4 col-span-6" />
-        </div>
-        <div v-else>
-            <UiEmpty v-if="list.length == 0" text="Hiện tại chưa có dữ liệu" />
-            <div class="grid grid-cols-12 lg:gap-6 md:gap-4 gap-2 md:mb-6 mb-4" v-else>
-                <LayoutPublicBankItem v-for="item in list" :key="item._id" :item="item"
-                    class="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12" />
+        <UiContent title="Thống kê tài khoản" size="xl" no-dot>
+            <div class="grid grid-cols-12 lg:gap-6 md:gap-4 gap-2" v-if="!!loading || !list">
+                <LoadingBank v-for="i in page.size" :key="i" class="xl:col-span-3 lg:col-span-4 col-span-6" />
             </div>
-            <UiFlex justify="center" v-if="list.length < page.total">
-                <UPagination v-model="page.current" :page-count="page.size" :total="page.total" :max="5" show-last
-                    show-first />
-            </UiFlex>
-        </div>
+            <div v-else>
+                <UiEmpty v-if="list.length == 0" text="Hiện tại chưa có dữ liệu" />
+                <div class="grid grid-cols-12 lg:gap-6 md:gap-4 gap-2 md:mb-6 mb-4" v-else>
+                    <ServiceBankItem v-for="item in list" :key="item._id" :item="item" class="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12" />
+                </div>
+                <UiFlex justify="center" v-if="list.length < page.total">
+                    <UPagination v-model="page.current" :page-count="page.size" :total="page.total" :max="5" show-last
+                        show-first />
+                </UiFlex>
+            </div>
+        </UiContent>
     </div>
 </template>
 
@@ -25,6 +23,8 @@
 definePageMeta({
     middleware: 'auth'
 })
+const list = ref(undefined)
+const loading = ref(true)
 const props = defineProps({
     title: String,
 })
@@ -37,9 +37,10 @@ const page = ref({
     },
     total: 0
 })
-const list = ref(undefined)
-const loading = ref(true)
+
 watch(() => page.value.size, () => getBank())
+watch(() => page.value.current, () => getBank())
+watch(() => page.value.sort, () => getBank())
 const getBank = async () => {
     try {
         loading.value = true
@@ -53,8 +54,5 @@ const getBank = async () => {
     }
 }
 
-onMounted(async () => {
-    await nextTick()
-    getBank()
-})
+getBank()
 </script>

@@ -1,6 +1,7 @@
 import { defineEventHandler, readBody } from 'h3';
 import type { IAuth } from "~~/types"
 import getAuth from '../../../../utils/getAuth';
+import resp from '../../../../utils/resp';
 
 export default defineEventHandler(async (event) => {
   try {
@@ -8,17 +9,19 @@ export default defineEventHandler(async (event) => {
     if (!auth) throw 'Vui lòng đăng nhập trước'
 
     const body = await readBody(event)
-    const { name, number, password, slug } = body
-    if (!name || !number || !password) throw 'Dữ liệu đầu vào không hợp lệ'
+    const { account, number, password, key } = body
+    
+    if (!account || !number || !password) throw 'Dữ liệu đầu vào không hợp lệ'
 
-    if(name && !name.match(/^[a-zA-Z0-9\s]+$/)) throw 'Tên tài khoản không hợp lệ'
+    if(account && !account.match(/^[a-zA-Z0-9\s]+$/)) throw 'Tên tài khoản không hợp lệ'
     if(number && !number.match(/^[0-9]+$/)) throw 'Số tài khoản không hợp lệ'
 
-    const bank = await DB.Bank.findOne({ slug: slug }).select('_id')
+    const bank = await DB.Bank.findOne({ key: key }).select('_id')
     if (!bank) throw 'Không tìm thấy ngân hàng'
 
-    const check = await DB.BankAccount.findOne({ name: name, bank: bank._id }).select('name')
+    const check = await DB.BankAccount.findOne({ account: account, bank: bank._id }).select('account')
     if (check) throw 'Tên tài khoản đã không tồn tại'
+    
     body.bank = bank._id
     await DB.BankAccount.create(body)
     return resp(event, { message: 'Thêm tài khoản thành công' })

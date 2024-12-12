@@ -30,9 +30,9 @@
                             <UFormGroup label="Mật khẩu" name="password" class="mt-3" :hint="`${state.password ? state.password.length : 0}/15`">
                                 <UInput icon="i-bxs-lock" size="lg" color="white" v-model="state.password" type="password" placeholder="Nhập mật khẩu" />
                             </UFormGroup>
+                            <ULink class="text-sm mt-3 text-gray-600 flex" to="/auth/login">Bạn chưa đã có tài khoản? <UiText weight="medium" class="ml-1">Đăng nhập</UiText></ULink>
                             <UiFlex class="mt-3 flex-wrap">
-                                <UButton class="mt-3 h-[40px]" type="submit" :loading="loading">Đăng ký</UButton>
-                                <UButton class="mt-3 ml-2 h-[40px]" @click="router.push('/auth/login')" color="gray">Đăng nhập</UButton>
+                                <UButton class="h-[40px]" type="submit" :loading="loading">Đăng ký</UButton>
                             </UiFlex>
                         </UForm>
                     </div>
@@ -42,6 +42,9 @@
     </div>
 </template>
 <script setup>
+definePageMeta({
+    layout: 'auth',
+});
 // state
 const state = ref({
     account: undefined,
@@ -51,6 +54,7 @@ const state = ref({
 })
 const loading = ref(false)
 const router = useRouter()
+const authStore = useAuthStore()
 // validate form
 const validateForm = (state) => {
     const errors = [];
@@ -77,6 +81,7 @@ const onSubmit = async () => {
         await useAPI('auth/sign/up', JSON.parse(JSON.stringify(state.value)))
         await authStore.setAuth()
         loading.value = false
+        router.push('/')
     } catch (error) {
         loading.value = false
     }

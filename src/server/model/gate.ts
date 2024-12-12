@@ -1,13 +1,13 @@
 import { Mongoose } from 'mongoose'
 import { IDBGate } from './../../../types/model/gate.d';
 
-export const DBGate = (mongoose : Mongoose) => {
-  const schema = new mongoose.Schema<IDBGate>({ 
+export const DBGate = (mongoose: Mongoose) => {
+  const schema = new mongoose.Schema<IDBGate>({
     type: { type: String },
     name: { type: String },
     person: { type: String },
     number: { type: String },
-    
+    image: { type: String },
     key: { type: String },
     qrcode: { type: String },
 
@@ -17,5 +17,5 @@ export const DBGate = (mongoose : Mongoose) => {
   })
 
   const model = mongoose.model('Gate', schema, 'Gate')
-  return model 
+  return model
 }

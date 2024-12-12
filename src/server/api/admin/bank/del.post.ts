@@ -1,4 +1,3 @@
-import { defineEventHandler } from "h3";
 import type { IAuth } from "~~/types";
 
 export default defineEventHandler(async (event) => {
@@ -17,7 +16,7 @@ export default defineEventHandler(async (event) => {
     // }
     await DB.Bank.findOneAndDelete({ _id: _id });
     return resp(event, { message: "Xóa thành công" });
-  } catch (error) {
+  } catch (error:any) {
     return resp(event, { code: 400, message: error.toString() });
   }
 });

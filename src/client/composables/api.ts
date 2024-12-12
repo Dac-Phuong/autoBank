@@ -28,10 +28,10 @@ export const useAPI = async (path : string, post?: any, options: any = {}) => {
       if(code == 200) useNotify().success(message)
       else useNotify().error(message)
     }
-
     if(code == 200) {
       return Promise.resolve(result || null)
     }
+
     else if(code == 500){
       if(import.meta.server){
         throw createError({ statusCode:code, message:message })
@@ -51,7 +51,7 @@ export const useAPI = async (path : string, post?: any, options: any = {}) => {
       return Promise.reject(message)
     }
     else {
-      return Promise.reject(message)
+      return Promise.reject(message) 
     }
   }
 }

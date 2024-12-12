@@ -1,7 +1,7 @@
 <template>
     <USelectMenu v-model="display" size="lg" value-attribute="value" placeholder="Hiển thị" :options="[
-        { label: 'Hiện', value: false },
-        { label: 'Ẩn', value: true },
+        { label: 'Hiện', value: true },
+        { label: 'Ẩn', value: false },
     ]">
         <template #label>
             <span v-if="display !== undefined">{{ displayFormat[display]?.label }}</span>
@@ -24,7 +24,7 @@ const display = computed({
 })
 
 const displayFormat = {
-    false: { label: 'Hiện', color: 'gray' },
-    true: { label: 'Ẩn', color: 'green' },
+    true: { label: 'Hiện', color: 'gray' },
+    false: { label: 'Ẩn', color: 'green' },
 }
 </script>
