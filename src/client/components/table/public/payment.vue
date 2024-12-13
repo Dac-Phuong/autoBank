@@ -19,7 +19,8 @@
 
             <UTable v-model:sort="page.sort" :columns="columns" :rows="list">
                 <template #code-data="{ row }">
-                    <UiText color="primary" weight="semibold" pointer @click="viewPay(row.gate._id, row.code, row.money)">{{ row.code }}
+                    <UiText color="primary" weight="semibold" pointer
+                        @click="viewPay(row.gate._id, row.code, row.money)">{{ row.code }}
                     </UiText>
                 </template>
 
@@ -94,8 +95,14 @@
 </template>
 
 <script setup>
-const route = useRoute()
 const { toMoney } = useMoney()
+const props = defineProps({
+    refreshData: {
+        type: Boolean,
+        required: true,
+    }
+})
+watch(() => props.refreshData, () => getList(), { deep: true })
 
 const loading = ref({
     load: true,

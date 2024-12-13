@@ -1,7 +1,8 @@
 <template>
     <div>
         <LayoutPublicHeader label="Nạp tiền" />
-        <UiContent title="Nạp tiền vào tài khoản" no-dot sub="Hệ thống nạp tiền vào tài khoản" class="mt-3 mr-auto" size="xl">
+        <UiContent title="Nạp tiền vào tài khoản" no-dot sub="Hệ thống nạp tiền vào tài khoản" class="mt-3 mr-auto"
+            size="xl">
             <div class="mt-5 mx-auto">
                 <UForm :state="state" :validate="validate" @submit="onSubmit" class="grid grid-cols-12 gap-4 mb-4">
                     <div class="2xl:col-span-6 col-span-12">
@@ -31,7 +32,8 @@
                                 </div>
                                 <div class="mb-4" v-if="state.gate">
                                     <UFormGroup label="Nhập số tiền" name="money">
-                                        <UInput size="lg" v-model="state.money" type="number" placeholder="Nhỏ nhất 20.000" />
+                                        <UInput size="lg" v-model="state.money" type="number"
+                                            placeholder="Nhỏ nhất 20.000" />
                                     </UFormGroup>
                                 </div>
                             </div>
@@ -49,18 +51,21 @@
                                                 class="break-words text-xs text-gray-500 dark:text-gray-400 font-semibold">
                                                 Kênh
                                             </UiText>
-                                            <UiText class="break-words text-sm font-semibold">{{ state.gate.name }}</UiText>
+                                            <UiText class="break-words text-sm font-semibold">{{ state.gate.name }}
+                                            </UiText>
                                         </UiFlex>
                                         <UiFlex justify="between" class="items-center w-full">
                                             <UiText
                                                 class="break-words text-xs text-gray-500 dark:text-gray-400 font-semibold">
                                                 Tài khoản
                                             </UiText>
-                                            <UiFlex @click="startCopy(state.gate.number)" class="items-center cursor-pointer">
+                                            <UiFlex @click="startCopy(state.gate.number)"
+                                                class="items-center cursor-pointer">
                                                 <UiText class="break-words text-sm font-semibold">
                                                     {{ state.gate.number }}
                                                 </UiText>
-                                                <span class="iconify i-bx:copy-alt text-primary-500 dark:text-primary-400 cursor-pointer ml-2"
+                                                <span
+                                                    class="iconify i-bx:copy-alt text-primary-500 dark:text-primary-400 cursor-pointer ml-2"
                                                     aria-hidden="true"></span>
                                             </UiFlex>
                                         </UiFlex>
@@ -69,7 +74,8 @@
                                                 class="break-words text-xs text-gray-500 dark:text-gray-400 font-semibold">
                                                 Người nhận
                                             </UiText>
-                                            <UiFlex @click="startCopy(state.gate.person)" class="items-center cursor-pointer">
+                                            <UiFlex @click="startCopy(state.gate.person)"
+                                                class="items-center cursor-pointer">
                                                 <UiText class="break-words text-sm font-semibold">
                                                     {{ state.gate.person }}
                                                 </UiText>
@@ -79,24 +85,29 @@
                                             </UiFlex>
                                         </UiFlex>
                                         <UiFlex justify="between" class="items-center w-full">
-                                            <UiText class="break-words text-xs text-gray-500 dark:text-gray-400 font-semibold">
+                                            <UiText
+                                                class="break-words text-xs text-gray-500 dark:text-gray-400 font-semibold">
                                                 Số tiền
                                             </UiText>
                                             <UiFlex class="items-center cursor-pointer" @click="startCopy(state.money)">
-                                                <UiText class="break-words text-sm font-semibold">{{ useMoney().toMoney(state.money) }} đ
+                                                <UiText class="break-words text-sm font-semibold">{{
+                                                    useMoney().toMoney(state.money) }} đ
                                                 </UiText>
-                                                <span class="iconify i-bx:copy-alt text-primary-500 dark:text-primary-400 cursor-pointer ml-2"
+                                                <span
+                                                    class="iconify i-bx:copy-alt text-primary-500 dark:text-primary-400 cursor-pointer ml-2"
                                                     aria-hidden="true"></span>
                                             </UiFlex>
                                         </UiFlex>
                                         <UiFlex justify="between" class="items-center w-full">
-                                            <UiText class="break-words text-xs text-gray-500 dark:text-gray-400 font-semibold">
+                                            <UiText
+                                                class="break-words text-xs text-gray-500 dark:text-gray-400 font-semibold">
                                                 Nội dung
                                             </UiText>
                                             <UiFlex @click="startCopy(state.code)" class="items-center cursor-pointer">
                                                 <UiText class="break-words text-sm font-semibold">{{ state.code }}
                                                 </UiText>
-                                                <span class="iconify i-bx:copy-alt text-primary-500 dark:text-primary-400 cursor-pointer ml-2"
+                                                <span
+                                                    class="iconify i-bx:copy-alt text-primary-500 dark:text-primary-400 cursor-pointer ml-2"
                                                     aria-hidden="true"></span>
                                             </UiFlex>
                                         </UiFlex>
@@ -112,7 +123,7 @@
                     </div>
                 </UForm>
                 <!-- table -->
-                <TablePublicPayment/>
+                <TablePublicPayment :refreshData="refreshData" />
             </div>
         </UiContent>
     </div>
@@ -122,11 +133,13 @@
 import { useClipboard } from '@vueuse/core'
 import Empty from '~/components/ui/Empty.vue';
 const { copy, isSupported } = useClipboard()
+const refreshData = ref(false)
 const state = ref({
     index: null,
     money: 0,
     gate: undefined,
-    code: 'PAY-'+ Math.floor(Math.random() * 100000)
+    code: 'PAY-'+ Math.floor(Math.random() * 100000),
+    load: false,
 });
 const loading = ref(false);
 const list = ref([]);
@@ -151,8 +164,9 @@ const onSubmit = async () => {
         loading.value = true;
         await useAPI("client/payment/create", JSON.stringify(state.value));
         loading.value = false;
-        getList();
-        state.value.code = 'PAY-'+ Math.floor(Math.random() * 100000);
+        state.value.code = 'PAY-' + Math.floor(Math.random() * 100000);
+        state.value.money = 0;
+        refreshData.value = !refreshData.value;
     } catch (e) {
         loading.value = false;
     }

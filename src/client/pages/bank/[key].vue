@@ -108,6 +108,7 @@ const route = useRoute();
 const news = ref(undefined);
 const list = ref(undefined);
 const option = ref<any>([5, 10, 20, 50, 100]);
+
 // Columns
 const columns = [
     {
@@ -187,6 +188,7 @@ const stateEdit = ref({
 const modal = ref({
     add: false,
     edit: false,
+    buy: false,
 });
 
 watch(() => modal.value.add, (val) => !val && ((stateAdd as any).value = {

@@ -9,14 +9,17 @@
                         <UiText tag="h3" class="font-bold">Danh mục tài liệu API</UiText>
                     </template>
                     <template #default>
-                        <div v-for="(item, index) in list" :key="item._id" @click="getDocs(item, index)"
-                            class="mb-2 last:mb-0">
-                            <UiFlex justify="between"
-                                class="items-center px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-                                :class="[state.index === index ? 'bg-primary-500 dark:bg-primary-400 text-white dark:text-gray-400' : 'text-gray-600 dark:text-gray-400']">
-                                <UiText class="font-semibold">{{ item.name }}</UiText>
-                            </UiFlex>
+                        <div v-if="list && list.length > 0">
+                            <div v-for="(item, index) in list" :key="item._id" @click="getDocs(item, index)"
+                                class="mb-2 last:mb-0">
+                                <UiFlex justify="between"
+                                    class="items-center px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                                    :class="[state.index === index ? 'bg-primary-500 dark:bg-primary-400 text-white dark:text-gray-400' : 'text-gray-600 dark:text-gray-400']">
+                                    <UiText class="font-semibold">{{ item.name }}</UiText>
+                                </UiFlex>
+                            </div>
                         </div>
+                        <UiEmpty class="mt-5" v-else text="Hiện tại chưa có dữ liệu" />
                     </template>
                 </UCard>
                 <UCard class="xl:col-span-9 lg:col-span-8 md:col-span-6 col-span-12">
@@ -25,8 +28,8 @@
                     </template>
                     <template #default>
                         <div v-if="state.docs && state.docs.length > 0">
-                            <UAccordion :items="state.docs.map((item) => ({ label: item.name, value: item,content: item.content  }))">
-                               
+                            <UAccordion
+                                :items="state.docs.map((item) => ({ label: item.name, value: item,content: item.content  }))">
                             </UAccordion>
                         </div>
                         <UiEmpty class="mt-5" v-else text="Hiện tại chưa có dữ liệu" />
