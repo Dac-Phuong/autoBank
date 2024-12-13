@@ -1,6 +1,6 @@
 <template>
     <UiFlex type="col">
-      <UiIcon size="16" color="primary" name="i-bx-data"></UiIcon>
+      <UiIcon size="16" color="primary" name="tabler:mood-empty"></UiIcon>
       <UiText size="sm" color="gray" class="text-center" :color="color" :size="size" :text="text" />
     </UiFlex>
 </template>

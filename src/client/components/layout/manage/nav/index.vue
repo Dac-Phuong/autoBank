@@ -48,13 +48,13 @@
       ]
     },
     {
-      label: 'Tài liệu',
-      icon: 'line-md:text-box-twotone-to-text-box-multiple-twotone-transition',
+      label: 'Nạp tiền',
+      icon: 'ic:twotone-payments',
       defaultOpen: true,
       slot: 'tab-1',
       children: [
-        { label: 'Danh mục', to: '/admin/docs/category' },
-        { label: 'Danh sách', to: '/admin/docs' }
+        { label: 'Kênh nạp', to: '/admin/gate' },
+        { label: 'Danh sách', to: '/admin/payment' },
       ]
     },
     {
@@ -67,13 +67,13 @@
       ]
     },
     {
-      label: 'Nạp tiền',
-      icon: 'ic:twotone-payments',
+      label: 'Tài liệu',
+      icon: 'line-md:text-box-twotone-to-text-box-multiple-twotone-transition',
       defaultOpen: true,
       slot: 'tab-3',
       children: [
-        { label: 'Kênh nạp', to: '/admin/gate' },
-        { label: 'Danh sách', to: '/admin/payment' },
+        { label: 'Danh mục', to: '/admin/docs/category' },
+        { label: 'Danh sách', to: '/admin/docs' }
       ]
     },
     {

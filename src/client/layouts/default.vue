@@ -1,7 +1,7 @@
 <template>
   <div class="LayoutPublic relative h-full min-h-full">
     <div class="grid grid-cols-12 gap-0 min-h-full">
-      <div class="xl:w-auto w-full xl:col-span-2 bg-[var(--bg-primary)] col-span-12 dark:bg-gray-900 px-4 py-8 overflow-y-auto h-full">
+      <div class="xl:col-span-2 col-span-12 xl:block hidden xl:sticky xl:top-0  xl:max-h-[calc(100vh)] xl:overflow-y-auto  bg-[var(--bg-primary)] backdrop-blur-xl p-4">
         <LayoutPublicNav />
       </div>
       <div class="relative xl:col-span-10 col-span-12 bg-[var(--bg-primary)] py-5 pr-2 pl-2 xl:py-5 xl:pr-8 xl:pl-0">

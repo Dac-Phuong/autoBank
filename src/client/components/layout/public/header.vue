@@ -1,6 +1,5 @@
 <template>
-  <div
-    class="p-2 mb-3 sticky top-0 h-full shadow z-50 bg-white/75 rounded-lg dark:bg-gray-900 backdrop-blur-xl flex items-center gap-1 h-[var(--header-size)] max-h-[var(--header-size)] ">
+  <div class="p-2 mb-3 h-full shadow bg-white/75 rounded-lg flex items-center gap-1  ">
     <UiFlex class="hidden md:flex">
       <UBreadcrumb :links="links" />
     </UiFlex>

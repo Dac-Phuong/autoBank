@@ -1,7 +1,8 @@
 <template>
-  <UiFlex class="select-none" items="end">
-    <UiText weight="bold" size="2xl" :color="color" class="text-white italic">ENI AutoMB</UiText>
-  </UiFlex>
+  <UiFlex class="!flex">
+    <UiText weight="bold" size="2xl" class="italic text-white">ENI</UiText>
+    <UiText class="ml-1 pt-1.5 italic text-white" size="base" weight="semibold">AutoMB </UiText>
+</UiFlex>
 </template>
 
 <script setup>

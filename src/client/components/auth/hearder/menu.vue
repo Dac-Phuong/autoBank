@@ -45,10 +45,6 @@ const menuUser = computed(() => {
       label: 'Tài khoản',
       icon: 'i-bx-edit',
       click: () => modal.value.edit.info = true
-    }, {
-      label: 'Thay đổi mật khẩu',
-      icon: 'i-bx-lock',
-      click: () => modal.value.edit.password = true
     }],
     [{
       label: 'Hỗ trợ',

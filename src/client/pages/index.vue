@@ -1,7 +1,7 @@
 <template>
     <div >
         <LayoutPublicHeader label="Tổng quan" />
-        <UiContent title="Thống kê tài khoản" size="xl" no-dot>
+        <UiContent title="Thống kê tài khoản" sub="Danh sách các ngân hàng" class="mt-3" size="xl" no-dot>
             <div class="grid grid-cols-12 lg:gap-6 md:gap-4 gap-2" v-if="!!loading || !list">
                 <LoadingBank v-for="i in page.size" :key="i" class="xl:col-span-3 lg:col-span-4 col-span-6" />
             </div>
