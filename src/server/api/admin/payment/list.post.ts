@@ -18,15 +18,20 @@ export default defineEventHandler(async (event) => {
         match['code'] = { $regex : search.key.toLowerCase(), $options : 'i' }
       }
       if(search.by == 'USER'){
-        const users = await DB.User.find({
-          account : { $regex : search.key.toLowerCase(), $options : 'i' }
-        }).select('_id')
-        
+        const users = await DB.User.find({ account : { $regex : search.key.toLowerCase(), $options : 'i' }}).select('_id')
         match['user'] = {
           $in: users.map(i => i._id)
         }
       }
     }
+    // if (search.key) {
+    //   const searchKey = new RegExp(search.key, 'i')
+    //   match.$or = [
+    //     { code: searchKey },
+    //     { money: searchKey },
+    //     { 'user.account': searchKey },
+    //   ]
+    // }
 
     const list = await DB.Payment
     .aggregate([
