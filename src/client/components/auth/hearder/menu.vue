@@ -17,7 +17,7 @@
 </template>
 <script setup>
 const authStore = useAuthStore()
-
+const router = useRouter()
 const open = ref(false)
 const modal = ref({
   edit: {
@@ -44,7 +44,7 @@ const menuUser = computed(() => {
     [{
       label: 'Tài khoản',
       icon: 'i-bx-edit',
-      click: () => modal.value.edit.info = true
+      click: () => router.push('/account')
     }],
     [{
       label: 'Hỗ trợ',

@@ -3,6 +3,8 @@ import { IDBUser } from './../../../types/model/user.d';
 export const DBUser = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBUser>({ 
     account: { type: String },
+    username: { type: String },
+    org_name: { type: String },
     password: { type: String },
     email: { type: String },
     phone: { type: String },

@@ -114,7 +114,7 @@
                 <UiText class="mb-1 text-gray-600" weight="bold">Thông tin giá thuê</UiText>
                 <UiFlex class="align-center pt-2" v-for="(item, index) in stateOptions.options" :key="index">
 
-                    <UInput v-model="item.days" required type="number" class="w-2/4 mb-2" placeholder="Nhập số ngày" />
+                    <UInput v-model="item.number" required type="number" class="w-2/4 mb-2" placeholder="Nhập số tháng" />
                     <UInput v-model="item.money" type="number" required class="w-3/4 mb-2 ml-2" placeholder="Nhập giá tiền" />
 
                     <UButton type="button" icon="i-heroicons-trash" @click="stateOptions.options.splice(index, 1)"
@@ -122,14 +122,11 @@
                 </UiFlex>
 
                 <UiFlex class="mt-4 align-center">
-                    <UButton type="button" size="sm" @click="stateOptions.options.push({ days: '', money: '' })"
+                    <UButton type="button" size="sm" @click="stateOptions.options.push({ number: '', money: '' })"
                         color="primary" class="ml-2 mt-2 flex items-center justify-center">Thêm</UButton>
                     <UiFlex class="ml-auto">
                         <UButton type="submit" :loading="loading.options">Lưu</UButton>
-                        <UButton color="gray" @click="modal.editOptions = false" :disabled="loading.options"
-                            class="ml-1">
-                            Đóng
-                        </UButton>
+                        <UButton color="gray" @click="modal.editOptions = false" :disabled="loading.options" class="ml-1"> Đóng </UButton>
                     </UiFlex>
                 </UiFlex>
 
@@ -177,7 +174,7 @@ const stateEditBank = ref({
 const stateOptions = ref({
     _id: null,
     options: [{
-        days: '',
+        number: '',
         money: ''
     }],
 })
@@ -194,7 +191,7 @@ const actions = (row) => [
         label: 'Sửa giá thuê',
         icon: 'i-bx-dollar',
         click: () => {
-            stateOptions.value.options = row.options && row.options.length > 0 ? row.options : [{ days: '', money: '' }]
+            stateOptions.value.options = row.options && row.options.length > 0 ? row.options : [{ number: '', money: '' }]
             stateOptions.value._id = row._id
             modal.value.editOptions = true
         }

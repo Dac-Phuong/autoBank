@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
     if(!sort.column || !sort.direction) throw 'Dữ liệu sắp xếp sai'
 
     const sorting : any = { }
+    const match: any = {user: auth._id}
     sorting[sort.column] = sort.direction == 'desc' ? -1 : 1
 
     const list = await DB.Bank
@@ -18,8 +19,19 @@ export default defineEventHandler(async (event) => {
       {
         $lookup: {
           from: "BankAccount",
-          localField: "_id",
-          foreignField: "bank",
+          let: { bankId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$bank", "$$bankId"] },
+                    { $eq: ["$user", auth._id] }
+                  ]
+                }
+              }
+            }
+          ],
           as: "listAccount"
         }
       },

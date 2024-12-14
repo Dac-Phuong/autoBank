@@ -3,7 +3,8 @@ import { Types } from 'mongoose'
 export interface IAuth {
   _id: Types.ObjectId
   username: string
-  type: number
+  type: number,
+  coin: number
 }
 
 export interface IResp {

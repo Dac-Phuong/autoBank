@@ -26,7 +26,10 @@ export const DBBankAccount = (mongoose: Mongoose) => {
       number: { type: String },
       password: { type: String },
       time: { type: Date },
+      option: { type: Object },
+      expired_date: { type: Date },
       policy: { type: Boolean, default: true },
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       bank: { type: mongoose.Schema.Types.ObjectId, ref: "Bank" },
     },
     {

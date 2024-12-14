@@ -22,7 +22,10 @@ export interface IDBBankAccount {
   time: Date;
   policy: boolean;
   bank: Types.ObjectId;
+  user: Types.ObjectId
+  option: Object
   status: Number;
+  expired_date: Date
 }
 
 

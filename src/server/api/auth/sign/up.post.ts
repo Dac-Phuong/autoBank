@@ -42,6 +42,7 @@ export default defineEventHandler(async (event) => {
     // Create
     const user = await DB.User.create({
       account: account,
+      username: account,
       password: md5(password),
       phone: phone,
       email: email,

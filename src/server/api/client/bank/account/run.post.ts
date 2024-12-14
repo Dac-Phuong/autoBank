@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     const check = await DB.BankAccount.findOne({ _id: _id }).select('name status time')
     if (!check) throw 'Không tìm thấy tài khoản'
 
-    const status = check.status === 0 ? 1 : 0
+    const status = check.status === 1 ? 2 : 1
     await DB.BankAccount.updateOne({ _id: _id }, { $set: { status, time: new Date() } })
     
     return resp(event, { message: 'Chuyển trạng thái thành công' })

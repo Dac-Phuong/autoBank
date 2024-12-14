@@ -1,6 +1,6 @@
 <template>
     <LayoutPublicHeader :label="`${(route.params.key as string).toUpperCase()}`" />
-    <UiContent title="Danh sách tài khoản"  no-dot>
+    <UiContent title="Danh sách tài khoản" no-dot>
         <UiFlex class="mb-4" justify="between">
             <UiFlex>
                 <USelectMenu v-model="page.size" :options="option" />
@@ -19,23 +19,34 @@
                     <UiText>{{ row.account }}</UiText>
                 </template>
 
+                <template #option-data="{ row }">
+                    <UiText v-if="row.option"  weight="semibold" >{{ useMoney().toMoney(row.option.money) }} / {{ row.option.number }} Tháng </UiText>
+                    <UiText v-else>...</UiText>
+                </template>
+
                 <template #status-data="{ row }">
-                    <UBadge :color="row.status == 0 ? 'red' : 'green'" variant="soft">{{ row.status == 0 ? "Dừng" :
-                        "Chạy" }}
+                    <UBadge :color="statusFormat[row.status].color" variant="soft">
+                        {{ statusFormat[row.status].label }}
                     </UBadge>
                 </template>
+
                 <template #createdAt-data="{ row }">
                     {{ useDayJs().displayFull(row.createdAt) }}
                 </template>
-                <template #time-data="{ row }">
-                    {{ useDayJs().displayFull(row.time) }}
+
+                <template #expired_date-data="{ row }">
+                    {{ useDayJs().displayFull(row.expired_date) || '...' }}
                 </template>
 
                 <template #actions-data="{ row }">
-                    <UDropdown :items="actions(row)">
+                    <UDropdown v-if="row.status !== 0" :items="actions(row)">
                         <UButton color="gray" icon="i-bx-dots-horizontal-rounded" :disabled="loading.del" />
                     </UDropdown>
+                    <div v-else>
+                        <UButton color="green" @click="getOption(row.bank[0], row._id)">Kích hoạt</UButton>
+                    </div>
                 </template>
+
             </UTable>
         </UCard>
         <!-- Pagination -->
@@ -46,7 +57,8 @@
 
         <!-- Modal Add -->
         <UModal v-model="modal.add" preventClose>
-            <UForm :validate="validateForm" :state="stateAdd" @submit="addAction" class="p-4 border border-gray-100 dark:border-gray-700 rounded-lg">
+            <UForm :validate="validateForm" :state="stateAdd" @submit="addAction"
+                class="p-4 border border-gray-100 dark:border-gray-700 rounded-lg">
                 <UFormGroup class="mb-3" label="Số tài khoản" name="number">
                     <UInput size="lg" v-model="stateAdd.number" placeholder="Nhập số tài khoản ngân hàng" />
                 </UFormGroup>
@@ -64,17 +76,19 @@
                     <UCheckbox v-model="stateAdd.policy" class="cursor-pointer" name="notifications"
                         label="Bạn đồng ý với chính sách bảo mật của chúng tôi và cho phép chúng tôi truy xuất dữ liệu tài chính của bạn." />
                 </UFormGroup>
-                
+
                 <UiFlex justify="end" class="mt-6">
                     <UButton type="submit" :loading="loading.add">Thêm</UButton>
-                    <UButton color="gray" @click="modal.add = false" :disabled="loading.add" class="ml-1 border border-gray-200 dark:border-gray-700 rounded-xl">Đóng</UButton>
+                    <UButton color="gray" @click="modal.add = false" :disabled="loading.add"
+                        class="ml-1 border border-gray-200 dark:border-gray-700 rounded-xl">Đóng</UButton>
                 </UiFlex>
             </UForm>
         </UModal>
 
         <!-- Modal Edit -->
         <UModal v-model="modal.edit" preventClose>
-            <UForm :validate="validateForm" :state="stateEdit" @submit="editAction" class="p-4 border border-gray-100 dark:border-gray-700 rounded-lg">
+            <UForm :validate="validateForm" :state="stateEdit" @submit="editAction"
+                class="p-4 border border-gray-100 dark:border-gray-700 rounded-lg">
                 <UFormGroup class="mb-3" label="Số tài khoản" name="number">
                     <UInput size="lg" v-model="stateEdit.number" placeholder="Nhập số tài khoản" />
                 </UFormGroup>
@@ -95,47 +109,145 @@
 
                 <UiFlex justify="end" class="mt-6">
                     <UButton type="submit" :loading="loading.edit">Sửa</UButton>
-                    <UButton color="gray" @click="modal.edit = false" :disabled="loading.edit" class="ml-1 border border-gray-200 dark:border-gray-700 rounded-xl">Đóng
+                    <UButton color="gray" @click="modal.edit = false" :disabled="loading.edit"
+                        class="ml-1 border border-gray-200 dark:border-gray-700 rounded-xl">Đóng
                     </UButton>
                 </UiFlex>
             </UForm>
+        </UModal>
+
+        <!-- Modal BUY -->
+        <UModal v-model="modal.buy" preventClose>
+            <UCard>
+                <template #header>
+                    <UiFlex justify="between" class="">
+                        <UiFlex color="gray"
+                            class="h-[36px] border border-gray-200 dark:border-gray-700 rounded-xl flex items-center">
+                            <UiFlex class="mr-1 h-full px-2 rounded-l-lg bg-primary">
+                                <UiIcon name="solar:dollar-linear" class="text-white" />
+                            </UiFlex>
+                            <UiText class="text-sm mr-1 p-1 font-semibold">{{
+                                useMoney().toMoney(authStore.profile?.currency.coin ||
+                                    0) }} xu</UiText>
+                        </UiFlex>
+                        <UButton color="gray" @click="modal.buy = false" icon="i-heroicons-x-mark"
+                            class="border border-gray-200 dark:border-gray-700 rounded-xl"></UButton>
+                    </UiFlex>
+                </template>
+                <template #default>
+                    <UForm :state="stateEdit">
+                        <UiText class="pb-5" weight="semibold">Chọn gói kích hoạt</UiText>
+                        <div v-if="options && options.options" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div v-for="(option, index) in options.options" :key="index"
+                                @click="selectOption(option, index)"
+                                class="relative flex flex-col items-center p-6 rounded-lg border cursor-pointer transition-all duration-200 ease-in-out"
+                                :class="[selectedOption === index ? 'border-primary-500 bg-primary-50' : 'border-gray-400 bg-gray-50']">
+                                <UiFlex class="items-center justify-center">
+                                    <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                                        :class="[selectedOption === index ? 'border-primary-500' : 'border-gray-500']">
+                                        <UiText v-if="selectedOption === index"
+                                            class="w-2.5 h-2.5 rounded-full bg-primary-600"></UiText>
+                                    </div>
+                                </UiFlex>
+                                <UiText class="text-sm text-gray-800 font-semibold text-center mt-2">
+                                    {{ option.number }} Tháng
+                                </UiText>
+                                <UiText class="text-sm text-gray-800 font-semibold text-center">
+                                    {{ useMoney().toMoney(option.money) }} xu
+                                </UiText>
+                            </div>
+                        </div>
+                        <UiEmpty v-else text="Chưa có dữ liệu gói" />
+                    </UForm>
+                </template>
+                <template #footer>
+                    <UiFlex justify="end" class="mt-4 mb-2">
+                        <UButton type="submit" :loading="loading.edit" @click="buyAction">Xác nhận</UButton>
+                    </UiFlex>
+                </template>
+            </UCard>
         </UModal>
     </UiContent>
 </template>
 
 <script setup lang="ts">
+const authStore: any = useAuthStore();
 const route = useRoute();
 const news = ref(undefined);
 const list = ref(undefined);
 const option = ref<any>([5, 10, 20, 50, 100]);
+const options = ref<any>([]);
+const selectedOption = ref(undefined)
 
+// State
+const stateAdd = ref({
+    key: route.params.key,
+    password: undefined,
+    account: undefined,
+    number: undefined,
+    policy: true
+});
+
+const stateEdit = ref({
+    _id: null,
+    key: route.params.key,
+    password: undefined,
+    account: undefined,
+    number: undefined,
+    policy: true
+});
+const stateBuy = ref({
+    _id: null,
+    key: route.params.key,
+    option: null,
+});
+
+// Modal
+const modal = ref({
+    add: false,
+    edit: false,
+    buy: false,
+});
+
+// Loading
+const loading = ref({
+    load: true,
+    add: false,
+    edit: false,
+    del: false,
+});
+const statusFormat: any = {
+    0: { label: 'Chưa kích hoạt', color: 'orange' },
+    1: { label: 'Chạy', color: 'green' },
+    2: { label: 'Dừng', color: 'red' },
+    3: { label: 'Hết hạn', color: 'red' },
+}
 // Columns
 const columns = [
     {
         key: "account",
         label: "Tài khoản",
-        sortable: true
-
     },
     {
         key: "number",
         label: "Số tài khoản",
-        sortable: true
     },
     {
         key: "status",
         label: "Trạng thái",
-        sortable: true
-
+    },
+    {
+        key: "option",
+        label: "Gói kích hoạt",
     },
     {
         key: "createdAt",
-        label: "Thời gian thêm",
+        label: "Ngày bắt đầu",
         sortable: true
     },
     {
-        key: "time",
-        label: "Lần chạy gần nhất",
+        key: "expired_date",
+        label: "Ngày hết hạn",
         sortable: true
     },
     {
@@ -165,46 +277,21 @@ watch(() => page.value.current, () => getList())
 watch(() => page.value.sort.column, () => getList())
 watch(() => page.value.sort.direction, () => getList())
 watch(() => page.value.search.key, (val) => !val && getList())
-
-// State
-const stateAdd = ref({
-    key: route.params.key,
-    password: undefined,
-    account: undefined,
-    number: undefined,
-    policy: true
-});
-
-const stateEdit = ref({
-    _id: null,
-    key: route.params.key,
-    password: undefined,
-    account: undefined,
-    number: undefined,
-    policy: true
-});
-
-// Modal
-const modal = ref({
-    add: false,
-    edit: false,
-    buy: false,
-});
-
 watch(() => modal.value.add, (val) => !val && ((stateAdd as any).value = {
     password: undefined,
     account: undefined,
     number: undefined,
-})
-);
+}));
 
-// Loading
-const loading = ref({
-    load: true,
-    add: false,
-    edit: false,
-    del: false,
-});
+const getOption = (option: any, _id: any) => {
+    options.value = option;
+    modal.value.buy = true;
+    stateBuy.value._id = _id
+}
+const selectOption = (option: any, index: any) => {
+    selectedOption.value = index
+    stateBuy.value.option = option
+}
 // validate
 const validateForm = (state: any) => {
     const errors = [];
@@ -233,11 +320,12 @@ const actions = (row: any) => [
             stateEdit.value.key = route.params.key
         }
     }, {
-        label: row.status == 0 ? 'Chạy auto' : 'Dừng auto',
-        icon: row.status == 0 ? 'iconamoon:player-start-bold' : 'iconamoon:player-stop-bold',
+        label: row.status == 1 ? 'Dừng auto' : 'Chạy auto',
+        icon: row.status == 1 ? 'iconamoon:player-stop-bold' : 'iconamoon:player-start-bold',
         click: () => runAction(row._id)
     }]
 ]
+
 // Fetch
 const getList = async () => {
     try {
@@ -266,8 +354,6 @@ const editAction = async () => {
     try {
         loading.value.edit = true;
         await useAPI("client/bank/account/edit", JSON.parse(JSON.stringify(stateEdit.value)));
-        console.log(stateEdit.value);
-
         loading.value.edit = false;
         modal.value.edit = false;
         getList();
@@ -281,6 +367,17 @@ const runAction = async (_id: object) => {
         await useAPI("client/bank/account/run", { _id });
         loading.value.add = false;
         modal.value.add = false;
+        getList();
+    } catch (e) {
+        loading.value.add = false;
+    }
+}
+const buyAction = async () => {
+    try {
+        loading.value.add = true;
+        await useAPI("client/bank/account/buy", JSON.parse(JSON.stringify(stateBuy.value)));
+        loading.value.add = false;
+        modal.value.buy = false;
         getList();
     } catch (e) {
         loading.value.add = false;

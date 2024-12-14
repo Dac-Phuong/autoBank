@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     const bank = await DB.Bank.findOne({ key: key }).select('_id')
     if (!bank) throw 'Không tìm thấy ngân hàng'
     
-    const match: any = { bank: bank._id }
+    const match: any = { bank: bank._id, user: auth._id }
  
     if (!!search.key) {
       
@@ -29,6 +29,12 @@ export default defineEventHandler(async (event) => {
 
     const list = await DB.BankAccount.aggregate([
       { $match: match },
+      {$lookup: {
+        from: "Bank",
+        localField: "bank",
+        foreignField: "_id",
+        as: "bank"
+      }},
       {
         $project: {
           account: 1,
@@ -38,6 +44,12 @@ export default defineEventHandler(async (event) => {
           status: 1,
           updatedAt: 1,
           createdAt: 1,
+          option: 1,
+          expired_date: 1,
+          bank: {
+            name: 1,
+            options: 1
+          }
         }
       },
       { $sort: sorting },
