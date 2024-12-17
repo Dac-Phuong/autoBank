@@ -5,12 +5,11 @@
                 <div class="hidden xl:flex flex-col min-h-screen h-full pt-5">
                     <UiLogo class="hidden xl:block" />
                     <div class="my-auto">
-                        <img src="/images/illustration.svg" class="mt-5 -intro-x w-1/2 -mt-16 md:-mt-10" />
-                        <UiText tag="h1"
-                            class="break-words text-3xl text-white dark:text-white-400 font-bold italic mt-10">
-                            Giải pháp <br /> thanh toán tự động.
+                        <img src="/images/illustration.svg" class="mt-5 -intro-x w-1/2 md:-mt-10" />
+                        <UiText size="3xl" class="break-words text-white dark:text-white-400 font-bold mt-10">
+                            Giải pháp <br /> thanh toán tự động
                         </UiText>
-                        <UiText class="intro-x mt-5 text-lg text-white text-opacity-50 dark:text-gray-500">Tích hợp
+                        <UiText class="intro-x mt-5 text-lg text-white dark:text-gray-200">Tích hợp
                             thanh toán tự động dễ dàng hơn</UiText>
                     </div>
                 </div>
@@ -32,7 +31,12 @@
                                 <UInput icon="i-bxs-lock" size="lg" type="password" color="white"
                                     v-model="state.password" placeholder="Nhập mật khẩu" />
                             </UFormGroup>
-                            <ULink class="text-sm mt-3 text-gray-600 flex" to="/auth/register">Bạn chưa có tài khoản? <UiText weight="medium" class="ml-1">Đăng ký ngay</UiText></ULink>
+                            <UiFlex class="align-center">
+                                <UiText class="text-sm text-gray-600 flex">Bạn chưa có tài khoản? </UiText>
+                                <ULink class="text-sm text-gray-600 flex" to="/auth/register">
+                                    <UiText weight="medium" class="ml-1">Đăng ký ngay</UiText>
+                                </ULink>
+                            </UiFlex>
                             <UiFlex class="flex-wrap">
                                 <UButton class="mt-2 h-[40px]" type="submit" :loading="loading">Đăng nhập</UButton>
                             </UiFlex>
@@ -103,11 +107,4 @@ const onSubmit = async () => {
     }
 }
 
-@media (max-width: 1279px) {
-    .login {
-        background: linear-gradient(180deg, #129347, #129347);
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }
-}
 </style>

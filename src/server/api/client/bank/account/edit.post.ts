@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
 
     if (username && !username?.match(/^[a-zA-Z0-9\s]+$/)) throw 'Tên tài khoản không hợp lệ'
     if (account && isNaN(+account)) throw 'Số tài khoản không hợp lệ'
+    if (path && !path.match(/^http/g)) throw 'URL nhận dữ liệu không hợp lệ'
 
     const bank = await DB.Bank.findOne({ key: key }).select('_id')
     if (!bank) throw 'Không tìm thấy ngân hàng'

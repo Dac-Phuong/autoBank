@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
 
     const data = await DB.BankAccount.findOne({ _id: _id }).select('status username account password bank path expired_date')
     if (!data) throw 'Không tìm thấy tài khoản'
+    if(!data.path) throw 'Vui lòng thêm url nhận dữ liệu trước khi chạy'
     
     const status = data.status === 1 ? 2 : 1
     const newData = await DB.BankAccount.findOneAndUpdate({ _id: data._id }, { $set: { status, time: new Date() } }, { new: true }).select('status username account password bank path')

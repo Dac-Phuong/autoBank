@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
         { _id: _id },
         {
           $set: {
-            status: 1,
+            status: 2,
             start_date: new Date(),
             expired_date: new Date(Date.now() + option.number * 30 * 24 * 60 * 60 * 1000),
             option: option
