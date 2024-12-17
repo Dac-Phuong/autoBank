@@ -191,7 +191,16 @@ const runAuto = async (data: any): Promise<void> => {
     const timeCheck = moment(Date.now())
     const toDay = timeCheck.format("DD/MM/YYYY")
     // const yesterDay = timeCheck.subtract(1, 'd').format("DD/MM/YYYY")
-    
+
+    // Expired
+    const expired = moment(data.expired_date)
+    if (expired.isBefore(timeCheck)) {
+      isLogin = false
+      sessionId = null
+      client = null
+      stopCronJob();
+      return
+    }
     // Running
     if (!data || data.status !== 1) {
       isLogin = false
