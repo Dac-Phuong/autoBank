@@ -78,7 +78,7 @@
     <UModal v-model="modal.edit">
       <UCard>
         <template #default>
-          <UForm :state="stateForgot" :validate="validate"  @submit="onSubmit" >
+          <UForm :state="stateForgot" :validate="validate"  @submit="submit" >
             <UFormGroup label="Mật khẩu hiện tại" name="oldPass" :hint="`${stateForgot.oldPass ? stateForgot.oldPass.length : 0}/15`">
               <UInput v-model="stateForgot.oldPass" type="password" placeholder="Mật khẩu hiện tại" />
             </UFormGroup>
@@ -144,8 +144,17 @@ const validate = (state:any ) => {
 
   return errors
 }
-
 const onSubmit = async () => {
+  try {
+    if(!!loading.value) return
+    loading.value = true
+    await useAPI('auth/edit', JSON.parse(JSON.stringify(state.value)))
+    loading.value = false
+  } catch (error) {
+    loading.value = false
+  }
+}
+const submit = async () => {
   try {
     if(!!loading.value) return
     loading.value = true

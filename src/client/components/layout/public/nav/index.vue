@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <UiLogo class="hidden xl:block mb-6 pb-2 border-b border-gray-100 dark:border-gray-800 cursor-pointer" @click="router.push('/')" />
+  <div class="bg-[var(--bg-primary)] h-full p-2">
+    <UiLogo class=" mb-6 pb-2 border-b border-gray-100 dark:border-gray-800 cursor-pointer" @click="router.push('/')" />
     <UVerticalNavigation :links="links" :ui="{ base: 'mb-1', padding: 'py-3', color: 'text-white', inactive: 'text-white', icon: 'text-white' }" />
-    <div class="w-full px-5 absolute bottom-4 left-0 ">
+    <div class="w-full px-5 absolute bottom-5 left-0 ">
       <LayoutPublicSupport />
     </div>
   </div>

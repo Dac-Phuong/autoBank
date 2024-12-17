@@ -20,7 +20,8 @@
                 </template>
 
                 <template #option-data="{ row }">
-                    <UiText v-if="row.option"  weight="semibold" >{{ useMoney().toMoney(row.option.money) }} / {{ row.option.number }} Tháng </UiText>
+                    <UiText v-if="row.option" weight="semibold">{{ useMoney().toMoney(row.option.money) }} / {{
+                        row.option.username }} Tháng </UiText>
                     <UiText v-else>...</UiText>
                 </template>
 
@@ -30,17 +31,17 @@
                     </UBadge>
                 </template>
 
-                <template #createdAt-data="{ row }">
-                    {{ useDayJs().displayFull(row.createdAt) }}
+                <template #start_date-data="{ row }">
+                    {{ row.start_date ? useDayJs().displayFull(row.start_date) : '...' }}
                 </template>
 
                 <template #expired_date-data="{ row }">
-                    {{ useDayJs().displayFull(row.expired_date) || '...' }}
+                    {{ row.expired_date ? useDayJs().displayFull(row.expired_date) : '...' }}
                 </template>
 
                 <template #actions-data="{ row }">
                     <UDropdown v-if="row.status !== 0" :items="actions(row)">
-                        <UButton color="gray" icon="i-bx-dots-horizontal-rounded" :disabled="loading.del" />
+                        <UButton color="gray" icon="i-bx-dots-horizontal-rounded" />
                     </UDropdown>
                     <div v-else>
                         <UButton color="green" @click="getOption(row.bank[0], row._id)">Kích hoạt</UButton>
@@ -59,17 +60,18 @@
         <UModal v-model="modal.add" preventClose>
             <UForm :validate="validateForm" :state="stateAdd" @submit="addAction"
                 class="p-4 border border-gray-100 dark:border-gray-700 rounded-lg">
-                <UFormGroup class="mb-3" label="Số tài khoản" name="number">
-                    <UInput size="lg" v-model="stateAdd.number" placeholder="Nhập số tài khoản ngân hàng" />
-                </UFormGroup>
 
-                <UFormGroup class="mb-3" label="Tài khoản đăng nhập" name="account">
-                    <UInput size="lg" v-model="stateAdd.account" placeholder="Nhập tài khoản ngân hàng" />
+                <UFormGroup class="mb-3" label="Tài khoản đăng nhập" name="username">
+                    <UInput size="lg" v-model="stateAdd.username" placeholder="Nhập tài khoản ngân hàng" />
                 </UFormGroup>
 
                 <UFormGroup class="mb-3" label="Mật khẩu đăng nhập" name="password">
                     <UInput size="lg" v-model="stateAdd.password" type="password"
                         placeholder="Nhập mật khẩu ngân hàng" />
+                </UFormGroup>
+
+                <UFormGroup class="mb-3" label="Số tài khoản" name="account">
+                    <UInput size="lg" v-model="stateAdd.account" placeholder="Nhập số tài khoản ngân hàng" />
                 </UFormGroup>
 
                 <UFormGroup class="mb-3" name="policy">
@@ -89,17 +91,22 @@
         <UModal v-model="modal.edit" preventClose>
             <UForm :validate="validateForm" :state="stateEdit" @submit="editAction"
                 class="p-4 border border-gray-100 dark:border-gray-700 rounded-lg">
-                <UFormGroup class="mb-3" label="Số tài khoản" name="number">
-                    <UInput size="lg" v-model="stateEdit.number" placeholder="Nhập số tài khoản" />
-                </UFormGroup>
 
-                <UFormGroup class="mb-3" label="Tài khoản đăng nhập" name="account">
-                    <UInput size="lg" v-model="stateEdit.account" placeholder="Nhập tài khoản ngân hàng" />
+                <UFormGroup class="mb-3" label="Tài khoản đăng nhập" name="username">
+                    <UInput size="lg" v-model="stateEdit.username" placeholder="Nhập tài khoản ngân hàng" />
                 </UFormGroup>
 
                 <UFormGroup class="mb-3" label="Mật khẩu đăng nhập" name="password">
                     <UInput size="lg" v-model="stateEdit.password" type="password"
                         placeholder="Nhập mật khẩu ngân hàng" />
+                </UFormGroup>
+                
+                <UFormGroup class="mb-3" label="Số tài khoản" name="account">
+                    <UInput size="lg" v-model="stateEdit.account" placeholder="Nhập số tài khoản" />
+                </UFormGroup>
+
+                <UFormGroup class="mb-3" label="URL lấy dữ liệu" name="path">
+                    <UInput size="lg" v-model="stateEdit.path" type="text" placeholder="Nhập url lấy dữ liệu" />
                 </UFormGroup>
 
                 <UFormGroup class="mb-3" name="policy">
@@ -184,7 +191,7 @@ const stateAdd = ref({
     key: route.params.key,
     password: undefined,
     account: undefined,
-    number: undefined,
+    username: undefined,
     policy: true
 });
 
@@ -193,7 +200,8 @@ const stateEdit = ref({
     key: route.params.key,
     password: undefined,
     account: undefined,
-    number: undefined,
+    username: undefined,
+    path: undefined,
     policy: true
 });
 const stateBuy = ref({
@@ -214,7 +222,7 @@ const loading = ref({
     load: true,
     add: false,
     edit: false,
-    del: false,
+    running: false,
 });
 const statusFormat: any = {
     0: { label: 'Chưa kích hoạt', color: 'orange' },
@@ -229,7 +237,7 @@ const columns = [
         label: "Tài khoản",
     },
     {
-        key: "number",
+        key: "username",
         label: "Số tài khoản",
     },
     {
@@ -241,7 +249,7 @@ const columns = [
         label: "Gói kích hoạt",
     },
     {
-        key: "createdAt",
+        key: "start_date",
         label: "Ngày bắt đầu",
         sortable: true
     },
@@ -280,7 +288,8 @@ watch(() => page.value.search.key, (val) => !val && getList())
 watch(() => modal.value.add, (val) => !val && ((stateAdd as any).value = {
     password: undefined,
     account: undefined,
-    number: undefined,
+    username: undefined,
+    policy: true
 }));
 
 const getOption = (option: any, _id: any) => {
@@ -295,15 +304,17 @@ const selectOption = (option: any, index: any) => {
 // validate
 const validateForm = (state: any) => {
     const errors = [];
-    if (!state.number) errors.push({ path: 'number', message: 'Vui lòng nhập số tài khoản' })
-    else if (isNaN(+state.number)) errors.push({ path: 'number', message: 'Định dạng không hợp lệ' })
-
-    if (!state.account) errors.push({ path: 'account', message: 'Vui lòng nhập tài khoản đăng nhập' })
-    if (!!state.account?.match(/\s/g)) errors.push({ path: 'account', message: 'Phát hiện khoảng cách' })
+    if (!state.username) errors.push({ path: 'username', message: 'Vui lòng nhập tài khoản đăng nhập ' })
+    if (!!state.username?.match(/\s/g)) errors.push({ path: 'username', message: 'Phát hiện khoảng cách' })
 
     if (!state.password) errors.push({ path: 'password', message: 'Vui lòng nhập mật khẩu' })
     else if (state.password.length < 6 || state.password.length > 15) errors.push({ path: 'password', message: 'Độ dài 6-15 ký tự' })
     else if (!!state.password?.match(/\s/g)) errors.push({ path: 'password', message: 'Phát hiện khoảng cách' })
+
+    if (!state.account) errors.push({ path: 'account', message: 'Vui lòng nhập số tài khoản' })
+    if (!!state.account?.match(/\s/g)) errors.push({ path: 'account', message: 'Phát hiện khoảng cách' })
+    else if (isNaN(+state.account)) errors.push({ path: 'account', message: 'Định dạng không hợp lệ' })
+
     if (!state.policy) errors.push({ path: 'policy', message: 'Vui lòng đồng ý với chính sách' })
     return errors;
 }
@@ -316,8 +327,8 @@ const actions = (row: any) => [
         click: () => {
             Object.keys(stateEdit.value).forEach(key => (stateEdit as any).value[key] = row[key]);
             modal.value.edit = true
-            stateEdit.value.policy = true
             stateEdit.value.key = route.params.key
+            stateEdit.value.policy = true
         }
     }, {
         label: row.status == 1 ? 'Dừng auto' : 'Chạy auto',
@@ -363,13 +374,13 @@ const editAction = async () => {
 };
 const runAction = async (_id: object) => {
     try {
-        loading.value.add = true;
+        loading.value.running = true;
         await useAPI("client/bank/account/run", { _id });
-        loading.value.add = false;
+        loading.value.running = false;
         modal.value.add = false;
         getList();
     } catch (e) {
-        loading.value.add = false;
+        loading.value.running = false;
     }
 }
 const buyAction = async () => {

@@ -1,21 +1,19 @@
-import { defineEventHandler, readBody } from 'h3';
-import type { IAuth } from "~~/types"
-import getAuth from '../../../../utils/getAuth';
+import runAuto from "~~/src/server/utils/runAuto"
 
 export default defineEventHandler(async (event) => {
   try {
-    const auth = await getAuth(event) as IAuth
-    if (!auth) throw 'Vui lòng đăng nhập trước'
-
+    const user = await getAuth(event)
+    if (!user) throw 'Vui lòng đăng nhập trước'
     const { _id } = await readBody(event)
     if (!_id) throw 'Dữ liệu đầu vào không hợp lệ'
 
-    const check = await DB.BankAccount.findOne({ _id: _id }).select('name status time')
-    if (!check) throw 'Không tìm thấy tài khoản'
+    const data = await DB.BankAccount.findOne({ _id: _id }).select('status username account password bank path')
+    if (!data) throw 'Không tìm thấy tài khoản'
 
-    const status = check.status === 1 ? 2 : 1
-    await DB.BankAccount.updateOne({ _id: _id }, { $set: { status, time: new Date() } })
+    const status = data.status === 1 ? 2 : 1
+    const newData = await DB.BankAccount.findOneAndUpdate({ _id: data._id }, { $set: { status, time: new Date() } }, { new: true }).select('status username account password bank path')
     
+    await runAuto(newData)
     return resp(event, { message: 'Chuyển trạng thái thành công' })
   }
   catch (e: any) {

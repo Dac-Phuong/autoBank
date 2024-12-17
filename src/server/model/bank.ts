@@ -23,10 +23,12 @@ export const DBBankAccount = (mongoose: Mongoose) => {
     {
       account: { type: String },
       status: { type: Number, default: 0 },
-      number: { type: String },
+      username: { type: String },
       password: { type: String },
       time: { type: Date },
       option: { type: Object },
+      path: { type: String },
+      start_date: { type: Date },
       expired_date: { type: Date },
       policy: { type: Boolean, default: true },
       user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

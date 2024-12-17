@@ -28,8 +28,8 @@
                 </template>
 
                 <template #display-data="{ row }">
-                    <UBadge :color="row.display ? 'red' : 'gray'" variant="soft">
-                        {{ row.display ? 'Khóa' : 'Không' }}
+                    <UBadge :color="row.display ? 'green' : 'red'" variant="soft">
+                        {{ row.display ? 'Có' : 'Không' }}
                     </UBadge>
                 </template>
 

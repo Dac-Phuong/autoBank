@@ -17,7 +17,7 @@ export interface IDBBankAccount {
   createdAt: Date;
   updatedAt: Date;
   account: string;
-  number: string;
+  username: string;
   password: string;
   time: Date;
   policy: boolean;
@@ -25,6 +25,8 @@ export interface IDBBankAccount {
   user: Types.ObjectId
   option: Object
   status: Number;
+  path: string;
+  start_date: Date
   expired_date: Date
 }
 

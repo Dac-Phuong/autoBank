@@ -1,7 +1,4 @@
-import { defineEventHandler, readBody } from 'h3';
 import type { IAuth } from "~~/types"
-import getAuth from '../../../../utils/getAuth';
-import resp from '../../../../utils/resp';
 
 export default defineEventHandler(async (event) => {
   try {
@@ -9,18 +6,19 @@ export default defineEventHandler(async (event) => {
     if (!auth) throw 'Vui lòng đăng nhập trước'
 
     const body = await readBody(event)
-    const { account, number, password, key } = body
-    
-    if (!account || !number || !password) throw 'Dữ liệu đầu vào không hợp lệ'
+    const { account, username, password, key } = body
+    if (!account || !username || !password) throw 'Dữ liệu đầu vào không hợp lệ'
+    // check validate
+    if(username && !username.match(/^[a-zA-Z0-9\s]+$/)) throw 'Tên tài khoản không hợp lệ'
+    if(username.match(/\s/g) || account.match(/\s/g) || password.match(/\s/g)) throw 'Phát hiện khoảng cách'
+    if(account && !account.match(/^[0-9]+$/)) throw 'Số tài khoản không hợp lệ'
+    if(password.length < 6 || password.length > 15) throw 'Mật khẩu trong khoảng 6-15 ký tự'
 
-    if(account && !account.match(/^[a-zA-Z0-9\s]+$/)) throw 'Tên tài khoản không hợp lệ'
-    if(number && !number.match(/^[0-9]+$/)) throw 'Số tài khoản không hợp lệ'
-    
     const bank = await DB.Bank.findOne({ key: key }).select('_id')
     if (!bank) throw 'Không tìm thấy ngân hàng'
 
-    const checkNumber = await DB.BankAccount.findOne({ number: number, bank: bank._id, user: auth._id }).select('number')
-    if (checkNumber) throw 'Số tài khoản đã tồn tại'
+    const checkAccount = await DB.BankAccount.findOne({ account: account, bank: bank._id, user: auth._id }).select('username')
+    if (checkAccount) throw 'Số tài khoản đã tồn tại'
     
     const check = await DB.BankAccount.findOne({ account: account, bank: bank._id, user: auth._id }).select('account')
     if (check) throw 'Tên tài khoản đã tồn tại'

@@ -11,7 +11,7 @@
                             <div class="px-4 py-5 sm:p-6 pb-2 sm:pb-2">
                                 <UiText class="break-words font-bold mb-4">Chọn kênh nạp</UiText>
                                 <div class="mb-4">
-                                    <div class="grid grid-cols-12 gap-2 ">
+                                    <div class="grid grid-cols-12 gap-2" v-if="list && list.length > 0">
                                         <div v-for="(item, index) in list" :key="index" @click="changeGate(item, index)"
                                             class="relative overflow-visible hover:scale-100 rounded-2xl divide-y dark:divide-gray-800 divide-gray-100 ring-1 dark:ring-gray-800 ring-gray-100 shadow bg-white dark:bg-gray-800 col-span-6 md:col-span-4 transition-2 cursor-pointer scale-95">
                                             <div class="p-2 sm:p-2">
@@ -29,6 +29,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <UiEmpty v-else text="Chưa có dữ liệu kênh nạp" />
                                 </div>
                                 <div class="mb-4" v-if="state.gate">
                                     <UFormGroup label="Nhập số tiền" name="money">
@@ -43,7 +44,7 @@
                         <div
                             class="relative overflow-visible rounded-2xl divide-y dark:divide-gray-800 divide-gray-100 ring-1 dark:ring-gray-800 ring-gray-100 shadow bg-white dark:bg-gray-900">
                             <div class="px-4 py-5 sm:p-6">
-                                <p class="break-words font-bold mb-4">Thông tin thanh toán</p>
+                                <UiText class="break-words font-bold mb-4">Thông tin thanh toán</UiText>
                                 <div class="mb-4" v-if="state.gate">
                                     <UiFlex class="flex-col items-center gap-4">
                                         <UiFlex class=" items-center w-full" justify="between">

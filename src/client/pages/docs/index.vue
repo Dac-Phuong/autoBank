@@ -13,7 +13,7 @@
                             <div v-for="(item, index) in list" :key="item._id" @click="getDocs(item, index)"
                                 class="mb-2 last:mb-0">
                                 <UiFlex justify="between"
-                                    class="items-center px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                                    class="items-center px-4 py-2 rounded-lg cursor-pointer hover:bg-green-100 dark:hover:bg-green-800 transition-colors duration-200"
                                     :class="[state.index === index ? 'bg-primary-500 dark:bg-primary-400 text-white dark:text-gray-400' : 'text-gray-600 dark:text-gray-400']">
                                     <UiText class="font-semibold">{{ item.name }}</UiText>
                                 </UiFlex>
@@ -28,9 +28,19 @@
                     </template>
                     <template #default>
                         <div v-if="state.docs && state.docs.length > 0">
-                            <UAccordion
-                                :items="state.docs.map((item) => ({ label: item.name, value: item,content: item.content  }))">
-                            </UAccordion>
+                            <div v-for="(item, index) in state.docs" :key="index" class="accordion-item mb-2">
+                                <UiFlex @click="toggle(index)" justify="between"
+                                    class="items-center px-4 py-2 text-lg font-semibold cursor-pointer bg-primary hover:bg-green-600 rounded-lg transition">
+                                    <UiText class="font-semibold text-white" size="base">{{ item.name }}</UiText>
+                                    <UiIcon name="ic:baseline-keyboard-arrow-up" class="text-white"
+                                        :class="{ 'rotate-180': activeIndex === index }">
+                                    </UiIcon>
+                                </UiFlex>
+                                <div v-if="activeIndex === index" class="px-4 py-1 mt-2 rounded-lg bg-white border border-gray-200">
+                                    <UiText v-if="item.content" v-html="item.content"></UiText>
+                                    <UiText v-else text="Hiện tại chưa có dữ liệu" size="sm" class="text-center" />
+                                </div>
+                            </div>
                         </div>
                         <UiEmpty class="mt-5" v-else text="Hiện tại chưa có dữ liệu" />
                     </template>
@@ -43,10 +53,14 @@
 
 const list = ref([]);
 const loading = ref(true);
+const activeIndex = ref(null);
 const state = ref({
     index: 0,
     docs: undefined
 })
+const toggle = (index) => {
+    activeIndex.value = activeIndex.value === index ? null : index;
+};
 const getDocs = (item, index) => {
     state.value.index = index;
     state.value.docs = item.docs;
@@ -64,3 +78,8 @@ const getList = async () => {
 }
 getList();
 </script>
+<style lang="scss">
+.accordion-transition {
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+</style>

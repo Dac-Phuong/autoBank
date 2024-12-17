@@ -127,17 +127,15 @@ const columns = [
     }, {
         key: 'status',
         label: 'Trạng thái',
-        sortable: true
     }, {
         key: 'money',
-        label: 'Tổng tiền',
+        label: 'Số tiền',
         sortable: true
     }, {
         key: 'createdAt',
         label: 'Thời gian tạo',
         sortable: true
     },
-
     {
         key: 'action',
         label: 'Hành động',

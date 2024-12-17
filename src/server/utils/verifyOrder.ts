@@ -1,8 +1,8 @@
 import type { H3Event } from 'h3'
 import type { Types } from 'mongoose'
-import { IDBUser } from '~~/types'
-import { IDBGate } from '~~/types/model/gate'
-import { IDBPayment } from '~~/types/model/Payment'
+import type { IDBUser } from '~~/types'
+import type { IDBGate } from '~~/types/model/gate'
+import type { IDBPayment } from '~~/types/model/Payment'
 
 interface IBodyData {
   _id: Types.ObjectId,

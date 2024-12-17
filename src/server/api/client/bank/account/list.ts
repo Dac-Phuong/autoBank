@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
       const regex = new RegExp(search.key.toLowerCase(), 'i');
       const $or = [
         { account: { $regex: regex } },
-        { number: { $regex: regex } },
+        { username: { $regex: regex } },
       ];
       match.$or = $or;
     }
@@ -39,12 +39,14 @@ export default defineEventHandler(async (event) => {
         $project: {
           account: 1,
           time: 1,
-          number: 1,
+          username: 1,
           password: 1,
           status: 1,
           updatedAt: 1,
           createdAt: 1,
           option: 1,
+          path:1,
+          start_date:1,
           expired_date: 1,
           bank: {
             name: 1,

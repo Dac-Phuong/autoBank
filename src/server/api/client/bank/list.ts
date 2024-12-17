@@ -11,11 +11,12 @@ export default defineEventHandler(async (event) => {
     if(!sort.column || !sort.direction) throw 'Dữ liệu sắp xếp sai'
 
     const sorting : any = { }
-    const match: any = {user: auth._id}
+    const match: any = {display: true}
     sorting[sort.column] = sort.direction == 'desc' ? -1 : 1
 
     const list = await DB.Bank
     .aggregate([
+      { $match: match },
       {
         $lookup: {
           from: "BankAccount",
