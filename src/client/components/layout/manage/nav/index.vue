@@ -87,15 +87,15 @@
       ]
     }
     ,
-    {
-      label: 'Nhật ký',
-      icon: 'i-bx-history',
-      defaultOpen: true,
-      slot: 'tab-5',
-      children: [
-        { label: 'Admin log', to: '/admin/log/admin' },
-        { label: 'User log', to: '/admin/log/user' },
-      ]
-    }
+    // {
+    //   label: 'Nhật ký',
+    //   icon: 'i-bx-history',
+    //   defaultOpen: true,
+    //   slot: 'tab-5',
+    //   children: [
+    //     { label: 'Admin log', to: '/admin/log/admin' },
+    //     { label: 'User log', to: '/admin/log/user' },
+    //   ]
+    // }
   ]
   </script>

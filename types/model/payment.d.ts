@@ -6,7 +6,7 @@ export interface IDBPayment {
   gate: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
-  money: string;
+  money: Number;
   status: Number;
   code: string
   verify: {

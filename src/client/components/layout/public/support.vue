@@ -41,7 +41,7 @@
               <div class="cursor-pointer" v-for="(value, key) in social" :key="key" @click="open(value)">
                 <UiImg 
                   class="max-w-[45px] max-h-[45px] rounded-full"
-                  :src="`/images/social/${key}.png`"
+                  :src="`/images/social/${key}.webp`"
                   w="1" h="1"
                   imgW="90" imgH="90"
                   :alt="key"

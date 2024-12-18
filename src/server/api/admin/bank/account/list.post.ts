@@ -13,21 +13,17 @@ export default defineEventHandler(async (event) => {
     const match: any = {};
 
     if (!!search.key) {
-      if (search.by == "NAME") match["name"] = { $regex: search.key.toLowerCase(), $options: "i" };
+      const regex = new RegExp(search.key.toLowerCase(), 'i');
+
+      match.$or = [
+        { account: { $regex: regex } },
+        { 'user.username': { $regex: regex } }
+      ];
     }
 
     sorting[sort.column] = sort.direction == "desc" ? -1 : 1;
 
     const list = await DB.BankAccount.aggregate([
-      { $match: match },
-      {
-        $lookup: {
-          from: "Bank",
-          localField: "bank",
-          foreignField: "_id",
-          as: "bank"
-        }
-      },
       {
         $lookup: {
           from: "User",
@@ -38,6 +34,15 @@ export default defineEventHandler(async (event) => {
       },
       {
         $unwind: "$user"
+      },
+      { $match: match },
+      {
+        $lookup: {
+          from: "Bank",
+          localField: "bank",
+          foreignField: "_id",
+          as: "bank"
+        }
       },
       {
         $project: {
@@ -52,8 +57,7 @@ export default defineEventHandler(async (event) => {
           start_date: 1,
           expired_date: 1,
           bank: {
-            name: 1,
-            options: 1
+            $arrayElemAt: ["$bank", 0]
           },
           user: {
             account: 1,
@@ -67,7 +71,7 @@ export default defineEventHandler(async (event) => {
     ])
     const total = await DB.BankAccount.countDocuments(match);
     return resp(event, { result: { list, total } });
-  } catch (error:any) {
+  } catch (error: any) {
     return resp(event, { code: 500, message: error.toString() });
   }
 });

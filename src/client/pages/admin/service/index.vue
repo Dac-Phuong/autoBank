@@ -7,7 +7,6 @@
                     <UInput v-model="page.search.key" placeholder="Tìm kiếm..." icon="i-bx-search" size="sm" />
                 </UiFlex>
             </UForm>
-            <UButton color="primary" class="ml-auto" @click="modal.addBank = true">Thêm mới</UButton>
         </UiFlex>
         <!-- Table -->
         <UCard :ui="{ body: { padding: 'p-0 sm:p-0 relative' } }">
@@ -49,92 +48,6 @@
             <USelectMenu v-model="selectedColumns" :options="columns" multiple placeholder="Chọn cột" />
             <UPagination v-model="page.current" :page-count="page.size" :total="page.total" :max="4" />
         </UiFlex>
-        <!-- Modal Add -->
-        <UModal v-model="modal.addBank" preventClose>
-            <UForm :state="stateAddBank" @submit="addBankAction" class="p-4">
-                <UFormGroup label="Tên ngân hàng">
-                    <UInput size="lg" class="mb-3" v-model="stateAddBank.name" />
-                </UFormGroup>
-                <UFormGroup label="hình ảnh" class="mb-3">
-                    <UiUploadImage v-model="stateAddBank.image">
-                        <template #default="{ select, loading }">
-                            <UInput size="lg" :model-value="stateAddBank.image" :loading="loading" readonly
-                                @click="select" />
-                        </template>
-                    </UiUploadImage>
-                </UFormGroup>
-
-                <UFormGroup label="Trạng thái" class="mb-3">
-                    <SelectStatus v-model="stateAddBank.status" />
-                </UFormGroup>
-
-                <UFormGroup label="Hiển thị" class="mb-3">
-                    <SelectDisplay v-model="stateAddBank.display" />
-                </UFormGroup>
-                <UiFlex justify="end" class="mt-4">
-                    <UButton type="submit" :loading="loading.addBank">Lưu</UButton>
-                    <UButton color="gray" @click="modal.addBank = false" :disabled="loading.addBank" class="ml-1">Đóng
-                    </UButton>
-                </UiFlex>
-            </UForm>
-        </UModal>
-        <!-- Modal Edit -->
-        <UModal v-model="modal.editBank" preventClose>
-            <UForm :state="stateEditBank" @submit="editBankAction" class="p-4">
-                <UFormGroup label="Tên ngân hàng">
-                    <UInput size="lg" class="mb-3" v-model="stateEditBank.name" />
-                </UFormGroup>
-                <UFormGroup label="hình ảnh" class="mb-3">
-                    <UiUploadImage v-model="stateEditBank.image">
-                        <template #default="{ select, loading }">
-                            <UInput size="lg" :model-value="stateEditBank.image" :loading="loading" readonly
-                                @click="select" />
-                        </template>
-                    </UiUploadImage>
-                </UFormGroup>
-
-                <UFormGroup label="Trạng thái" class="mb-3">
-                    <SelectStatus v-model="stateEditBank.status" />
-                </UFormGroup>
-
-                <UFormGroup label="Hiển thị" class="mb-3">
-                    <SelectDisplay v-model="stateEditBank.display" />
-                </UFormGroup>
-                <UiFlex justify="end" class="mt-4">
-                    <UButton type="submit" :loading="loading.editBank">Lưu</UButton>
-                    <UButton color="gray" @click="modal.editBank = false" :disabled="loading.editBank" class="ml-1">Đóng
-                    </UButton>
-                </UiFlex>
-            </UForm>
-        </UModal>
-        <!-- Modal Edit -->
-        <UModal v-model="modal.editOptions" preventClose>
-            <UForm :state="stateOptions" @submit="editOptions" class="p-4">
-                <UiText class="mb-1 text-gray-600" weight="bold">Thông tin giá thuê</UiText>
-                <UiFlex class="align-center pt-2" v-for="(item, index) in stateOptions.options" :key="index">
-
-                    <UInput v-model="item.number" required type="number" class="w-2/4 mb-2"
-                        placeholder="Nhập số tháng" />
-                    <UInput v-model="item.money" type="number" required class="w-3/4 mb-2 ml-2"
-                        placeholder="Nhập giá tiền" />
-
-                    <UButton type="button" icon="i-heroicons-trash" @click="stateOptions.options.splice(index, 1)"
-                        color="red" class="ml-2 mb-2 w-[40px] h-[40px] flex items-center justify-center" />
-                </UiFlex>
-
-                <UiFlex class="mt-4 align-center">
-                    <UButton type="button" size="sm" @click="stateOptions.options.push({ number: '', money: '' })"
-                        color="primary" class="ml-2 mt-2 flex items-center justify-center">Thêm</UButton>
-                    <UiFlex class="ml-auto">
-                        <UButton type="submit" :loading="loading.options">Lưu</UButton>
-                        <UButton color="gray" @click="modal.editOptions = false" :disabled="loading.options"
-                            class="ml-1"> Đóng
-                        </UButton>
-                    </UiFlex>
-                </UiFlex>
-
-            </UForm>
-        </UModal>
     </UiContent>
 </template>
 <script setup>
@@ -142,45 +55,9 @@ const list = ref([])
 // Loading
 const loading = ref({
     load: true,
-    addBank: false,
-    editBank: false,
     options: false,
 })
-// Modal
-const modal = ref({
-    addBank: false,
-    editBank: false,
-    editOptions: false,
-})
 
-watch(() => modal.value.addBank, (val) => !val && (stateAddBank.value = {
-    name: null,
-    image: null,
-    status: undefined,
-    display: true,
-}))
-
-// State
-const stateAddBank = ref({
-    name: null,
-    image: null,
-    status: undefined,
-    display: true,
-})
-const stateEditBank = ref({
-    _id: null,
-    name: null,
-    image: null,
-    status: undefined,
-    display: undefined,
-})
-const stateOptions = ref({
-    _id: null,
-    options: [{
-        number: '',
-        money: ''
-    }],
-})
 const statusFormat = {
     0: { label: 'Chưa kích hoạt', color: 'orange' },
     1: { label: 'Chạy', color: 'green' },
@@ -230,7 +107,6 @@ const page = ref({
     },
     search: {
         key: null,
-        by: 'NAME'
     },
     total: 0
 })

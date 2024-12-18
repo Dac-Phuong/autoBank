@@ -78,21 +78,25 @@
     <UModal v-model="modal.edit">
       <UCard>
         <template #default>
-          <UForm :state="stateForgot" :validate="validate"  @submit="submit" >
-            <UFormGroup label="Mật khẩu hiện tại" name="oldPass" :hint="`${stateForgot.oldPass ? stateForgot.oldPass.length : 0}/15`">
+          <UForm :state="stateForgot" :validate="validate" @submit="submit">
+            <UFormGroup label="Mật khẩu hiện tại" name="oldPass"
+              :hint="`${stateForgot.oldPass ? stateForgot.oldPass.length : 0}/15`">
               <UInput v-model="stateForgot.oldPass" type="password" placeholder="Mật khẩu hiện tại" />
             </UFormGroup>
 
-            <UFormGroup label="Mật khẩu mới" name="newPass" :hint="`${stateForgot.newPass ? stateForgot.newPass.length : 0}/15`">
+            <UFormGroup label="Mật khẩu mới" name="newPass"
+              :hint="`${stateForgot.newPass ? stateForgot.newPass.length : 0}/15`">
               <UInput v-model="stateForgot.newPass" type="password" placeholder="Mật khẩu mới" />
             </UFormGroup>
 
-            <UFormGroup label="Nhập lại mật khẩu mới" name="confirmPass" :hint="`${stateForgot.confirmPass ? stateForgot.confirmPass.length : 0}/15`">
+            <UFormGroup label="Nhập lại mật khẩu mới" name="confirmPass"
+              :hint="`${stateForgot.confirmPass ? stateForgot.confirmPass.length : 0}/15`">
               <UInput v-model="stateForgot.confirmPass" type="password" placeholder="Mật khẩu mới" />
             </UFormGroup>
 
             <UiFlex class="mt-2" justify="end">
-              <UButton color="gray" @click="modal.edit = false" class="ml-1 border border-gray-200 dark:border-gray-700 rounded-xl">Đóng</UButton>
+              <UButton color="gray" @click="modal.edit = false"
+                class="ml-1 border border-gray-200 dark:border-gray-700 rounded-xl">Đóng</UButton>
               <UButton type="submit" class="ml-2" :loading="loading">Cập nhật</UButton>
             </UiFlex>
           </UForm>
@@ -103,6 +107,13 @@
 </template>
 
 <script lang="ts" setup>
+definePageMeta({
+  middleware: 'auth'
+})
+useSeoMeta({
+  title: () => "Hồ sơ - ENI AutoMB",
+  ogTitle: () => "Hồ sơ - ENI AutoMB"
+})
 const authStore: any = useAuthStore()
 const loading = ref(false)
 const modal = ref({
@@ -114,7 +125,7 @@ const stateForgot = ref<any>({
   confirmPass: undefined
 })
 const state = ref(JSON.parse(JSON.stringify(authStore.profile)))
-const validate = (state:any ) => {
+const validate = (state: any) => {
   const errors = []
   if (!state.oldPass) {
     errors.push({ path: 'oldPass', message: 'Vui lòng nhập đầy đủ' })
@@ -146,7 +157,7 @@ const validate = (state:any ) => {
 }
 const onSubmit = async () => {
   try {
-    if(!!loading.value) return
+    if (!!loading.value) return
     loading.value = true
     await useAPI('auth/edit', JSON.parse(JSON.stringify(state.value)))
     loading.value = false
@@ -156,7 +167,7 @@ const onSubmit = async () => {
 }
 const submit = async () => {
   try {
-    if(!!loading.value) return
+    if (!!loading.value) return
     loading.value = true
     await useAPI('auth/sign/forgot', JSON.parse(JSON.stringify(stateForgot.value)))
     loading.value = false

@@ -5,7 +5,7 @@ export const DBPayment = (mongoose : Mongoose) => {
   const schema = new mongoose.Schema<IDBPayment>({ 
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     gate: { type: mongoose.Schema.Types.ObjectId, ref: 'Gate' },
-    money: { type: String },
+    money: { type: Number, index: true },
     status: { type: Number },
     code: { type: String },
     verify: { person: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, time: { type: Date }, reason: { type: String } },

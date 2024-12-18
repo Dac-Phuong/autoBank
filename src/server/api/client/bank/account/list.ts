@@ -15,7 +15,6 @@ export default defineEventHandler(async (event) => {
     const match: any = { bank: bank._id, user: auth._id }
  
     if (!!search.key) {
-      
       const regex = new RegExp(search.key.toLowerCase(), 'i');
       const $or = [
         { account: { $regex: regex } },

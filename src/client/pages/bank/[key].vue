@@ -178,8 +178,15 @@
 </template>
 
 <script setup lang="ts">
-const authStore: any = useAuthStore();
 const route = useRoute();
+definePageMeta({
+  middleware: 'auth'
+})
+useSeoMeta({
+  title: () => `${(route.params.key as string).toUpperCase()} - ENI AutoMB`,
+  ogTitle: () => `${(route.params.key as string).toUpperCase()} - ENI AutoMB`
+})
+const authStore: any = useAuthStore();
 const news = ref(undefined);
 const list = ref(undefined);
 const option = ref<any>([5, 10, 20, 50, 100]);
@@ -233,11 +240,11 @@ const statusFormat: any = {
 // Columns
 const columns = [
     {
-        key: "account",
+        key: "username",
         label: "Tài khoản",
     },
     {
-        key: "username",
+        key: "account",
         label: "Số tài khoản",
     },
     {

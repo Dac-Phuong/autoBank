@@ -22,13 +22,17 @@
 definePageMeta({
     middleware: 'auth'
 })
+useSeoMeta({
+  title: () => "Tổng quan - ENI AutoMB",
+  ogTitle: () => "Tổng quan - ENI AutoMB"
+})
 const list = ref(undefined)
 const loading = ref(true)
 const props = defineProps({
     title: String,
 })
 const page = ref({
-    size: 12,
+    size: 8,
     current: 1,
     sort: {
         column: 'updatedAt',

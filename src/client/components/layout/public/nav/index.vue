@@ -14,19 +14,19 @@ const router = useRouter()
 const links = [
   {
     label: 'Tổng quan',
-    icon: 'i-heroicons-home',
+    icon: 'material-symbols:dashboard',
     slot: 'tab-0',
     to: '/',
   },
   {
     label: 'Nạp xu',
-    icon: 'material-symbols:payments',
+    icon: 'ic:twotone-payments',
     slot: 'tab-1',
     to: '/payment'
   },
   {
     label: 'Tài liệu API',
-    icon: 'material-symbols:book-3-rounded',
+    icon: 'line-md:text-box-twotone-to-text-box-multiple-twotone-transition',
     slot: 'tab-2',
     to: '/docs'
   },

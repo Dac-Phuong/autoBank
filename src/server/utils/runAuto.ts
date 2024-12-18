@@ -11,7 +11,7 @@ let sessionId: string | null = null
 let deviceId: string = generateDeviceId()
 let wasmData: Buffer | null = null
 let isLogin: boolean = false
-let task: cron.ScheduledTask | null = null;
+const jobMap: Map<string, cron.ScheduledTask> = new Map();
 // Login
 const login = async (data: any): Promise<void> => {
   console.log('Start Login')
@@ -35,6 +35,7 @@ const login = async (data: any): Promise<void> => {
 
   const captchaRes: any = await captchaReq.body.json()
   const captchaContent = await decodeCaptcha(captchaRes)
+
   if (!captchaContent) throw 'LOGIN - Captcha'
 
   // Set Wasm Data
@@ -46,7 +47,6 @@ const login = async (data: any): Promise<void> => {
     });
     wasmData = Buffer.from(await wasm.body.arrayBuffer())
   }
-
   // Enc Data
   const dataEnc = await wasmEnc(wasmData, {
     userId: data.username as string,
@@ -76,6 +76,7 @@ const login = async (data: any): Promise<void> => {
   if (loginRes.result.ok) {
     isLogin = true
     sessionId = loginRes.sessionId
+    startCronJob(data);
     return
   }
   else {
@@ -129,7 +130,7 @@ const getHistory = async (data: {
     body: JSON.stringify(body)
   });
   const httpRes: any = await httpReq.body.json()
-  
+
   if (!httpRes || !httpRes.result) throw 'HISTORY'
   if (httpRes.result.ok == true) {
     if (!httpRes.transactionHistoryList) throw 'HISTORY'
@@ -158,7 +159,7 @@ const getHistory = async (data: {
 
 const sendHistory = async (history: any[], path: string, sign: string): Promise<void> => {
   for (const item of history) {
-    try {      
+    try {
       const response = await axios.post(path, { sign, ...item });
       console.log('Response:', response.data);
     } catch (error: any) {
@@ -168,65 +169,71 @@ const sendHistory = async (history: any[], path: string, sign: string): Promise<
 };
 
 const startCronJob = (data: any): void => {
-  console.log('Running cron task...');
-  if (task) return;
-  task = cron.schedule('*/1 * * * *', async () => {
-    await runAuto(data);
-  });
-  task.start();
-};
-const stopCronJob = (): void => {
-  if (task) {
-    task.stop();
-    task = null;
-    console.log('Stopping cron task.');
-  } else {
-    console.log('No cron job is running.');
+  const jobId = data.account;
+
+  if (!jobId) {
+    console.log('Không tìm thấy job ID!');
+    return;
   }
+
+  if (jobMap.has(jobId)) {
+    console.log(`Cron job với ID ${jobId} đã đang chạy.`);
+    return;
+  }
+
+  const task = cron.schedule('*/1 * * * *', async () => {
+    try {
+      console.log(`Đang chạy tác vụ cron với ID ${jobId}`);
+      // console.log('Danh sách các job trong jobMap:', Array.from(jobMap.keys()));
+      await runAuto(data);
+    } catch (error) {
+      console.error(`Lỗi khi chạy cron job ${jobId}:`, error);
+    }
+  });
+
+  jobMap.set(jobId, task);
+  task.start();
+  // console.log(`Đã bắt đầu cron job với ID ${jobId}.`);
 };
+
+const stopCronJob = (jobId: any): void => {
+  const job = jobMap.get(jobId);
+  if (job) {
+    job.stop();
+    jobMap.delete(jobId);
+    // console.log(`Dừng và xóa cron job với ID ${jobId}.`);
+  } 
+};
+
 // Running
 const runAuto = async (data: any): Promise<void> => {
   try {
-    const sign = 'eni@gm'
-    const timeCheck = moment(Date.now())
-    const toDay = timeCheck.format("DD/MM/YYYY")
-    // const yesterDay = timeCheck.subtract(1, 'd').format("DD/MM/YYYY")
+    const sign = 'eni@gm';
+    const timeCheck = moment(Date.now());
+    const toDay = timeCheck.format("DD/MM/YYYY");
 
-    // Expired
-    const expired = moment(data.expired_date)
+    const expired = moment(data.expired_date);
     if (expired.isBefore(timeCheck)) {
-      isLogin = false
-      sessionId = null
-      client = null
-      stopCronJob();
-      return
+      stopCronJob(data._id);
+      return;
     }
-    // Running
-    if (!data || data.status !== 1) {
-      isLogin = false
-      sessionId = null
-      client = null
-      stopCronJob();
-      return
-    }
+    await login(data);
 
-    // Login
-    if (!isLogin) await login(data)
-    // History
     const history: any = await getHistory({
       account: data.account,
       username: data.username,
       fromDate: toDay,
       toDate: toDay,
-    })
-    
-    await sendHistory(history, data.path, sign);
-    startCronJob(data);
-    return history
-  }
-  catch (e) {
-    await runAuto(data)
-  }
-}
+    });
+    // console.log('History:'+ data.account, history);
 
-export default runAuto
+    await sendHistory(history, data.path, sign);
+
+    return history;
+  } catch (error) {
+    await runAuto(data);
+  }
+};
+
+
+export { runAuto, startCronJob, stopCronJob }

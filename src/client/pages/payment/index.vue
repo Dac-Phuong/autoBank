@@ -65,9 +65,7 @@
                                                 <UiText class="break-words text-sm font-semibold">
                                                     {{ state.gate.number }}
                                                 </UiText>
-                                                <span
-                                                    class="iconify i-bx:copy-alt text-primary-500 dark:text-primary-400 cursor-pointer ml-2"
-                                                    aria-hidden="true"></span>
+                                                <UiIcon name="i-bx-copy-alt" color="primary" class="ml-2" pointer />
                                             </UiFlex>
                                         </UiFlex>
                                         <UiFlex justify="between" class="items-center w-full">
@@ -80,9 +78,7 @@
                                                 <UiText class="break-words text-sm font-semibold">
                                                     {{ state.gate.person }}
                                                 </UiText>
-                                                <span
-                                                    class="iconify i-bx:copy-alt text-primary-500 dark:text-primary-400 cursor-pointer ml-2"
-                                                    aria-hidden="true"></span>
+                                                <UiIcon name="i-bx-copy-alt" color="primary" class="ml-2" pointer />
                                             </UiFlex>
                                         </UiFlex>
                                         <UiFlex justify="between" class="items-center w-full">
@@ -94,9 +90,7 @@
                                                 <UiText class="break-words text-sm font-semibold">{{
                                                     useMoney().toMoney(state.money) }} đ
                                                 </UiText>
-                                                <span
-                                                    class="iconify i-bx:copy-alt text-primary-500 dark:text-primary-400 cursor-pointer ml-2"
-                                                    aria-hidden="true"></span>
+                                                <UiIcon name="i-bx-copy-alt" color="primary" class="ml-2" pointer />
                                             </UiFlex>
                                         </UiFlex>
                                         <UiFlex justify="between" class="items-center w-full">
@@ -107,9 +101,7 @@
                                             <UiFlex @click="startCopy(state.code)" class="items-center cursor-pointer">
                                                 <UiText class="break-words text-sm font-semibold">{{ state.code }}
                                                 </UiText>
-                                                <span
-                                                    class="iconify i-bx:copy-alt text-primary-500 dark:text-primary-400 cursor-pointer ml-2"
-                                                    aria-hidden="true"></span>
+                                                <UiIcon name="i-bx-copy-alt" color="primary" class="ml-2" pointer />
                                             </UiFlex>
                                         </UiFlex>
                                     </UiFlex>
@@ -131,6 +123,13 @@
 </template>
 
 <script setup>
+definePageMeta({
+    middleware: 'auth'
+})
+useSeoMeta({
+  title: () => "Nạp xu - ENI AutoMB",
+  ogTitle: () => "Nạp xu - ENI AutoMB"
+})
 import { useClipboard } from '@vueuse/core'
 import Empty from '~/components/ui/Empty.vue';
 const { copy, isSupported } = useClipboard()

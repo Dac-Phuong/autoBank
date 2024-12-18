@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     .aggregate([
       {
         $lookup: {
-          from: "Order",
+          from: "Payment",
           localField: "_id",
           foreignField: "gate",
           pipeline: [{
@@ -24,16 +24,16 @@ export default defineEventHandler(async (event) => {
               money: { $cond: [{$eq: ['$status', 1]} , '$money', 0] },
             },
           }],
-          as: "orders"
+          as: "payment"
         }
       },
       { 
         $addFields: { 
-          order_count: { $size: '$orders' },
-          order_money: { $sum: '$orders.money' }
+          order_count: { $size: '$payment' },
+          order_money: { $sum: '$payment.money' }
         }
       },
-      { $project: { orders: 0, createdAt: 0 }},
+      { $project: { payment: 0, createdAt: 0 }},
       { $sort: sorting },
       { $skip: (current - 1) * size },
       { $limit: size }
