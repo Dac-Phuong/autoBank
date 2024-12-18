@@ -10,9 +10,8 @@
                 <div class="grid grid-cols-12 lg:gap-6 md:gap-4 gap-2 md:mb-6 mb-4" v-else>
                     <ServiceBankItem v-for="item in list" :key="item._id" :item="item" class="xl:col-span-3 lg:col-span-4 md:col-span-6 col-span-12" />
                 </div>
-                <UiFlex justify="center" v-if="list.length < page.total">
-                    <UPagination v-model="page.current" :page-count="page.size" :total="page.total" :max="5" show-last
-                        show-first />
+                <UiFlex justify="center" v-if="list.length > 12">
+                    <UPagination v-model="page.current" :page-count="page.size" :total="page.total" :max="5" show-last show-first />
                 </UiFlex>
             </div>
         </UiContent>
@@ -35,7 +34,7 @@ const page = ref({
         column: 'updatedAt',
         direction: 'desc'
     },
-    total: 0
+    total: 8
 })
 
 watch(() => page.value.size, () => getBank())

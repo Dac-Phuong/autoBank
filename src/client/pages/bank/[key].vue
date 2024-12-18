@@ -21,7 +21,7 @@
 
                 <template #option-data="{ row }">
                     <UiText v-if="row.option" weight="semibold">{{ useMoney().toMoney(row.option.money) }} / {{
-                        row.option.username }} Tháng </UiText>
+                        row.option.number }} Tháng </UiText>
                     <UiText v-else>...</UiText>
                 </template>
 
@@ -100,13 +100,13 @@
                     <UInput size="lg" v-model="stateEdit.password" type="password"
                         placeholder="Nhập mật khẩu ngân hàng" />
                 </UFormGroup>
-                
+
                 <UFormGroup class="mb-3" label="Số tài khoản" name="account">
                     <UInput size="lg" v-model="stateEdit.account" placeholder="Nhập số tài khoản" />
                 </UFormGroup>
 
-                <UFormGroup class="mb-3" label="URL lấy dữ liệu" name="path">
-                    <UInput size="lg" v-model="stateEdit.path" type="text" placeholder="Nhập url lấy dữ liệu" />
+                <UFormGroup class="mb-3" label="URL nhận dữ liệu" name="path">
+                    <UInput size="lg" v-model="stateEdit.path" type="text" placeholder="Nhập url nhận dữ liệu" />
                 </UFormGroup>
 
                 <UFormGroup class="mb-3" name="policy">
@@ -286,6 +286,7 @@ watch(() => page.value.sort.column, () => getList())
 watch(() => page.value.sort.direction, () => getList())
 watch(() => page.value.search.key, (val) => !val && getList())
 watch(() => modal.value.add, (val) => !val && ((stateAdd as any).value = {
+    key: route.params.key,
     password: undefined,
     account: undefined,
     username: undefined,
@@ -314,6 +315,11 @@ const validateForm = (state: any) => {
     if (!state.account) errors.push({ path: 'account', message: 'Vui lòng nhập số tài khoản' })
     if (!!state.account?.match(/\s/g)) errors.push({ path: 'account', message: 'Phát hiện khoảng cách' })
     else if (isNaN(+state.account)) errors.push({ path: 'account', message: 'Định dạng không hợp lệ' })
+
+    if (!!modal.value.edit) {
+        if (!state.path) errors.push({ path: 'path', message: 'Vui lòng nhập url nhận dữ liệu' })
+        else if (!state.path.match(/^http/g)) errors.push({ path: 'path', message: 'Định dạng không hợp lệ' })
+    }
 
     if (!state.policy) errors.push({ path: 'policy', message: 'Vui lòng đồng ý với chính sách' })
     return errors;
