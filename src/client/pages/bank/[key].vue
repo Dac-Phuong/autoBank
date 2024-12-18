@@ -374,13 +374,13 @@ const editAction = async () => {
 };
 const runAction = async (_id: object) => {
     try {
-        loading.value.running = true;
+        loading.value.load = true;
         await useAPI("client/bank/account/run", { _id });
-        loading.value.running = false;
+        loading.value.load = false;
         modal.value.add = false;
         getList();
     } catch (e) {
-        loading.value.running = false;
+        loading.value.load = false;
     }
 }
 const buyAction = async () => {

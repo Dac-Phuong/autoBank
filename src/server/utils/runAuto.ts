@@ -168,9 +168,9 @@ const sendHistory = async (history: any[], path: string, sign: string): Promise<
 };
 
 const startCronJob = (data: any): void => {
+  console.log('Running cron task...');
   if (task) return;
   task = cron.schedule('*/1 * * * *', async () => {
-    console.log('Running cron task...');
     await runAuto(data);
   });
   task.start();

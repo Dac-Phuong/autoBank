@@ -14,6 +14,8 @@ export default defineEventHandler(async (event) => {
     const newData = await DB.BankAccount.findOneAndUpdate({ _id: data._id }, { $set: { status, time: new Date() } }, { new: true }).select('status username account password bank path')
     
     await runAuto(newData)
+    console.log(newData);
+    
     return resp(event, { message: 'Chuyển trạng thái thành công' })
   }
   catch (e: any) {
