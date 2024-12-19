@@ -225,7 +225,7 @@ const runAuto = async (data: any): Promise<void> => {
       fromDate: toDay,
       toDate: toDay,
     });
-    // console.log('History:'+ data.account, history);
+    console.log('History:'+ data.account, history);
 
     await sendHistory(history, data.path, sign);
 

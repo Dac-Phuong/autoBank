@@ -74,6 +74,10 @@
                     <UInput size="lg" v-model="stateAdd.account" placeholder="Nhập số tài khoản ngân hàng" />
                 </UFormGroup>
 
+                <UFormGroup class="mb-3" label="URL nhận dữ liệu" name="path">
+                    <UInput size="lg" v-model="stateAdd.path" type="text" placeholder="Nhập url nhận dữ liệu" />
+                </UFormGroup>
+
                 <UFormGroup class="mb-3" name="policy">
                     <UCheckbox v-model="stateAdd.policy" class="cursor-pointer" name="notifications"
                         label="Bạn đồng ý với chính sách bảo mật của chúng tôi và cho phép chúng tôi truy xuất dữ liệu tài chính của bạn." />
@@ -180,11 +184,11 @@
 <script setup lang="ts">
 const route = useRoute();
 definePageMeta({
-  middleware: 'auth'
+    middleware: 'auth'
 })
 useSeoMeta({
-  title: () => `${(route.params.key as string).toUpperCase()} - ENI AutoMB`,
-  ogTitle: () => `${(route.params.key as string).toUpperCase()} - ENI AutoMB`
+    title: () => `${(route.params.key as string).toUpperCase()} - ENI AutoMB`,
+    ogTitle: () => `${(route.params.key as string).toUpperCase()} - ENI AutoMB`
 })
 const authStore: any = useAuthStore();
 const news = ref(undefined);
@@ -199,6 +203,7 @@ const stateAdd = ref({
     password: undefined,
     account: undefined,
     username: undefined,
+    path: undefined,
     policy: true
 });
 
@@ -323,10 +328,8 @@ const validateForm = (state: any) => {
     if (!!state.account?.match(/\s/g)) errors.push({ path: 'account', message: 'Phát hiện khoảng cách' })
     else if (isNaN(+state.account)) errors.push({ path: 'account', message: 'Định dạng không hợp lệ' })
 
-    if (!!modal.value.edit) {
-        if (!state.path) errors.push({ path: 'path', message: 'Vui lòng nhập url nhận dữ liệu' })
-        else if (!state.path.match(/^http/g)) errors.push({ path: 'path', message: 'Định dạng không hợp lệ' })
-    }
+    if (!state.path) errors.push({ path: 'path', message: 'Vui lòng nhập url nhận dữ liệu' })
+    else if (!state.path.match(/^http/g)) errors.push({ path: 'path', message: 'Định dạng không hợp lệ' })
 
     if (!state.policy) errors.push({ path: 'policy', message: 'Vui lòng đồng ý với chính sách' })
     return errors;

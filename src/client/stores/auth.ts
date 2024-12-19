@@ -1,4 +1,3 @@
-import { defineStore } from 'pinia'
 import type { IDBUserStore } from '~~/types'
 
 export const useAuthStore = defineStore('auth', () => {

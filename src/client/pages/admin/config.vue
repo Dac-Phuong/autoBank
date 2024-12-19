@@ -1,5 +1,5 @@
 <template>
-  <UiContent title="Config" sub="Chỉnh sửa cấu hình trang" class="max-w-3xl mx-auto">
+  <UiContent title="Config" sub="Chỉnh sửa cấu hình trang" size="2xl" class="max-w-3xl mx-auto">
     <UAccordion color="primary" variant="soft" size="md" :items="menu">
       <template #default="{ item, open }">
         <UButton :color="open ? 'primary' : 'gray'" size="md" class="mb-2">

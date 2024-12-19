@@ -20,7 +20,7 @@ const links = [
   },
   {
     label: 'Nạp xu',
-    icon: 'ic:twotone-payments',
+    icon: 'i-bx:credit-card',
     slot: 'tab-1',
     to: '/payment'
   },

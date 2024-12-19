@@ -13,14 +13,16 @@ export default defineEventHandler(async (event) => {
     sorting[sort.column] = sort.direction == 'desc' ? -1 : 1
 
     const match : any = { user: auth._id }
-    if (search.key) {
-      const searchKey = new RegExp(search.key, 'i') 
+ 
+    if (!!search.key) {
+      const regex = new RegExp(search.key, 'i');
       match.$or = [
-        { code: searchKey },       
-        { money: searchKey },      
-      ]
+        { code: regex },
+        { money: regex },
+        { 'user.account': regex },
+      ];
     }
-
+    
     if(!!range && !!range['start'] && !!range['end']){
       match['createdAt'] = { $gte: new Date(range['start']), $lte: new Date(range['end']) }
     }

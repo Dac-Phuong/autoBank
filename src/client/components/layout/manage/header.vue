@@ -17,8 +17,7 @@
             <UiFlex justify="end" items="center" class="gap-1 ml-auto">
                 <!-- <Setting /> -->
                 <UiFlex justify="end" items="center" class="ml-auto gap-1">
-                    <LazyAuthSign v-if="!authStore.isLogin" />
-                    <LazyAuthHearder v-else />
+                    <LazyAuthHearder />
                 </UiFlex>
             </UiFlex>
         </UiFlex>

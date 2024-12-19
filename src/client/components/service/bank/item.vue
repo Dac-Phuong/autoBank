@@ -3,7 +3,7 @@
         <div class="relative z-10" @click="open(item.key, item.status)">
             <UiFlex justify="between">
                 <UiImg :src="item.image" w="1" h="1" class="w-12 h-12" />
-                <UBadge color="primary">{{ item.status == 0 ? 'Đã mở' : 'Chưa mở' }}</UBadge>
+                <UBadge :color="item.status == 0 ? 'green' : 'red'" variant="soft">{{ item.status == 0 ? 'Đã mở' : 'Chưa mở' }}</UBadge>
             </UiFlex>
             <UiText class="text-3xl font-bold leading-8 mt-6 text-gray">{{ item.count }}</UiText>
             <UiText class="text-base text-gray-600 mt-1 font-semibold">{{ item.name }}</UiText>

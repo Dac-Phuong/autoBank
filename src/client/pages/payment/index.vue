@@ -11,25 +11,28 @@
                             <div class="px-4 py-5 sm:p-6 pb-2 sm:pb-2">
                                 <UiText class="break-words font-bold mb-4">Chọn kênh nạp</UiText>
                                 <div class="mb-4">
-                                    <div class="grid grid-cols-12 gap-2" v-if="list && list.length > 0">
-                                        <div v-for="(item, index) in list" :key="index" @click="changeGate(item, index)"
-                                            class="relative overflow-visible hover:scale-100 rounded-2xl divide-y dark:divide-gray-800 divide-gray-100 ring-1 dark:ring-gray-800 ring-gray-100 shadow bg-white dark:bg-gray-800 col-span-6 md:col-span-4 transition-2 cursor-pointer scale-95">
-                                            <div class="p-2 sm:p-2">
-                                                <UiFlex justify="center" class="items-center gap-1">
-                                                    <UiText
-                                                        class="break-words text-xs md:text-base font-semibold text-center">
-                                                        {{ item.name }}
-                                                    </UiText>
-                                                    <UIcon v-if="state.index === index" name="i-bxs:check-circle"
-                                                        class="text-primary"></UIcon>
-                                                </UiFlex>
-                                            </div>
-                                            <div class="px-4 py-5 sm:p-6 pt-2 border-none sm:pt-2">
-                                                <UiImg class="mt-2" :src="item.image" />
+                                    <LoadingPayment v-if="loading.load"/>
+                                    <div v-else>
+                                        <div class="grid grid-cols-12 gap-2" v-if="list && list.length > 0">
+                                            <div v-for="(item, index) in list" :key="index" @click="changeGate(item, index)"
+                                                class="relative overflow-visible hover:scale-100 rounded-2xl divide-y dark:divide-gray-800 divide-gray-100 ring-1 dark:ring-gray-800 ring-gray-100 shadow bg-white dark:bg-gray-800 col-span-6 md:col-span-4 transition-2 cursor-pointer scale-95">
+                                                <div class="p-2 sm:p-2">
+                                                    <UiFlex justify="center" class="items-center gap-1">
+                                                        <UiText
+                                                            class="break-words text-xs md:text-base font-semibold text-center">
+                                                            {{ item.name }}
+                                                        </UiText>
+                                                        <UIcon v-if="state.index === index" name="i-bxs:check-circle"
+                                                            class="text-primary"></UIcon>
+                                                    </UiFlex>
+                                                </div>
+                                                <div class="px-4 py-5 sm:p-6 pt-2 border-none sm:pt-2">
+                                                    <UiImg class="mt-2" :src="item.image" />
+                                                </div>
                                             </div>
                                         </div>
+                                        <UiEmpty v-else text="Chưa có dữ liệu kênh nạp" />
                                     </div>
-                                    <UiEmpty v-else text="Chưa có dữ liệu kênh nạp" />
                                 </div>
                                 <div class="mb-4" v-if="state.gate">
                                     <UFormGroup label="Nhập số tiền" name="money">
@@ -105,8 +108,7 @@
                                             </UiFlex>
                                         </UiFlex>
                                     </UiFlex>
-                                    <UButton type="submit"
-                                        class="focus:outline-none mt-5 disabled:cursor-not-allowed disabled:opacity-75 flex-shrink-0 font-semibold rounded-2xl text-sm gap-x-1.5 px-2.5 py-1.5 shadow-sm text-white dark:text-gray-900 bg-primary-500 hover:bg-primary-600 disabled:bg-primary-500 dark:bg-primary-400 dark:hover:bg-primary-500 dark:disabled:bg-primary-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:focus-visible:outline-primary-400 w-full flex justify-center items-center">
+                                    <UButton type="submit" :loading="loading.pay" class="mt-5 font-semibold rounded-2xl text-sm gap-x-1.5 px-2.5 py-1.5 shadow-sm  w-full flex justify-center">
                                         Tạo Giao Dịch
                                     </UButton>
                                 </div>
@@ -141,7 +143,10 @@ const state = ref({
     code: 'PAY-'+ Math.floor(Math.random() * 100000),
     load: false,
 });
-const loading = ref(false);
+const loading = ref({
+    load: false,
+    pay: false
+});
 const list = ref([]);
 const startCopy = (text) => {
     if (!isSupported.value || !text) return
@@ -161,24 +166,24 @@ const changeGate = (gate, index) => {
 }
 const onSubmit = async () => {
     try {
-        loading.value = true;
+        loading.value.pay = true;
         await useAPI("client/payment/create", JSON.stringify(state.value));
-        loading.value = false;
+        loading.value.pay = false;
         state.value.code = 'PAY-' + Math.floor(Math.random() * 100000);
         state.value.money = 0;
         refreshData.value = !refreshData.value;
     } catch (e) {
-        loading.value = false;
+        loading.value.pay = false;
     }
 }
 const getGate = async () => {
     try {
-        loading.value = true;
+        loading.value.load = true;
         const data = await useAPI("client/gate/get");
         list.value = data;
-        loading.value = false;
+        loading.value.load = false;
     } catch (e) {
-        loading.value = false;
+        loading.value.load = false;
     }
 };
 getGate();

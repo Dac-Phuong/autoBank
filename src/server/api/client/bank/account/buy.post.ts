@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
       if(!_id) throw 'Không tìm thấy tài khoản'
       if(!option) throw 'Vui lòng chọn gói kích hoạt'
 
-      const account = await DB.BankAccount.findOne({ _id: _id }).select('money') 
+      const account = await DB.BankAccount.findOne({ _id: _id }).select('money status') 
       if(!account) throw 'Không tìm thấy tài khoản'
     
       if(user.coin < option.money) throw 'Số dư không dủ, Vui lòng nạp thêm xu'

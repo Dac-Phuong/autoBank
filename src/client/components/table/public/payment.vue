@@ -5,6 +5,7 @@
             header: { padding: 'px-3 sm:px-3 py-2 sm:py-2' },
             footer: { padding: 'p-2 sm:p-2' },
         }">
+            <LoadingTable v-if="loading.load" />
             <template #header>
                 <UiFlex>
                     <USelectMenu v-model="page.size" :options="[5, 10, 20, 50, 100]" class="mr-1" />
@@ -15,7 +16,6 @@
                 </UiFlex>
             </template>
 
-            <LoadingTable v-if="loading.load" />
 
             <UTable v-model:sort="page.sort" :columns="columns" :rows="list">
                 <template #code-data="{ row }">
@@ -102,7 +102,6 @@ const props = defineProps({
         required: true,
     }
 })
-watch(() => props.refreshData, () => getList(), { deep: true })
 
 const loading = ref({
     load: true,
@@ -163,6 +162,8 @@ watch(() => page.value.current, () => getList())
 watch(() => page.value.sort.column, () => getList())
 watch(() => page.value.sort.direction, () => getList())
 watch(() => page.value.search.key, (val) => !val && getList())
+watch(() => props.refreshData, () => getList(), { deep: true })
+
 watch(() => page.value.range.start, (val) => {
     if (!!val && !!page.value.range.end) return getList()
     if (!val && !page.value.range.end) return getList()

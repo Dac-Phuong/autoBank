@@ -16,8 +16,8 @@
                     {{ row.user.username }}
                 </template>
 
-                <template #image-data="{ row }">
-                    <UiImg :src="row.image" class="w-[80px]" w="16" h="8" />
+                <template #bank-data="{ row }">
+                    <UBadge variant="soft">{{ row.bank.name }}</UBadge>
                 </template>
 
                 <template #option-data="{ row }">
@@ -40,6 +40,12 @@
                     {{ row.expired_date ? useDayJs().displayFull(row.expired_date) : '...' }}
                 </template>
 
+                <template #actions-data="{ row }">
+                    <UDropdown v-if="row.status !== 0" :items="actions(row)">
+                        <UButton color="gray" icon="i-bx-dots-horizontal-rounded" />
+                    </UDropdown>
+                    <UButton v-else @click="getOption(row.bank.options, row._id)">Kích hoạt</UButton>
+                </template>
             </UTable>
         </UCard>
 
@@ -48,16 +54,82 @@
             <USelectMenu v-model="selectedColumns" :options="columns" multiple placeholder="Chọn cột" />
             <UPagination v-model="page.current" :page-count="page.size" :total="page.total" :max="4" />
         </UiFlex>
+        <!-- Modal -->
+        <UModal v-model="modal.active">
+            <UCard>
+                <template #default>
+                    <UForm :state="state">
+                        <UiText class="pb-5" weight="semibold">Chọn gói kích hoạt</UiText>
+                        <div v-if="packages && packages.length > 0" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div v-for="(option, index) in packages" :key="index" @click="selectOption(option, index)"
+                                class="relative flex flex-col items-center p-6 rounded-lg border cursor-pointer transition-all duration-200 ease-in-out"
+                                :class="[selectedOption === index ? 'border-primary-500 bg-primary-50' : 'border-gray-400 bg-gray-50']">
+                                <UiFlex class="items-center justify-center">
+                                    <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                                        :class="[selectedOption === index ? 'border-primary-500' : 'border-gray-500']">
+                                        <UiText v-if="selectedOption === index"
+                                            class="w-2.5 h-2.5 rounded-full bg-primary-600"></UiText>
+                                    </div>
+                                </UiFlex>
+                                <UiText class="text-sm text-gray-800 font-semibold text-center mt-2">
+                                    {{ option.number }} Tháng
+                                </UiText>
+                                <UiText class="text-sm text-gray-800 font-semibold text-center">
+                                    {{ useMoney().toMoney(option.money) }} xu
+                                </UiText>
+                            </div>
+                        </div>
+                        <UiEmpty v-else text="Chưa có dữ liệu gói" />
+                    </UForm>
+                </template>
+                <template #footer>
+                    <UiFlex justify="end" class="mt-4 mb-2">
+                        <UButton color="gray" class="border border-gray-200" @click="modal.active = false">Đóng</UButton>
+                        <UButton class="ml-2" type="submit" :loading="loading.edit" @click="activeAction">Xác nhận</UButton>
+                    </UiFlex>
+                </template>
+            </UCard>
+        </UModal>
     </UiContent>
 </template>
 <script setup>
 const list = ref([])
+const packages = ref([])
+const selectedOption = ref(undefined)
+
 // Loading
 const loading = ref({
     load: true,
-    options: false,
+    active: false,
 })
-
+const modal = ref({
+    active: false,
+})
+const state = ref({
+    _id: null,
+    option: null,
+})
+const getOption = (options, _id) => {
+    packages.value = options;
+    modal.value.active = true;
+    state.value._id = _id
+}
+const selectOption = (option, index) => {
+    selectedOption.value = index
+    state.value.option = option
+}
+// Actions
+const actions = (row) => [
+    [{
+        label: 'Hủy gói',
+        icon: 'material-symbols:cancel',
+        click: () => cancelAction(row._id)
+    }, {
+        label: row.status == 1 ? 'Dừng auto' : 'Chạy auto',
+        icon: row.status == 1 ? 'iconamoon:player-stop-bold' : 'iconamoon:player-start-bold',
+        click: () => runAction(row._id)
+    }]
+]
 const statusFormat = {
     0: { label: 'Chưa kích hoạt', color: 'orange' },
     1: { label: 'Chạy', color: 'green' },
@@ -68,6 +140,10 @@ const columns = [
     {
         key: "user.username",
         label: "Người dùng",
+    },
+    {
+        key: "bank",
+        label: "Ngân hàng",
     },
     {
         key: "account",
@@ -116,6 +192,42 @@ watch(() => page.value.sort.column, () => getList())
 watch(() => page.value.sort.direction, () => getList())
 watch(() => page.value.search.key, (val) => !val && getList())
 
+const cancelAction = async (_id) => {
+    try {
+        loading.value.load = true
+        await useAPI('admin/bank/account/cancel', { _id })
+        loading.value.load = false
+        getList()
+    }
+    catch (e) {
+        loading.value.load = false
+    }
+}
+const runAction = async (_id) => {
+    try {
+        loading.value.load = true
+        await useAPI('admin/bank/account/run', { _id })
+        loading.value.load = false
+        getList()
+    }
+    catch (e) {
+        loading.value.load = false
+    }
+}
+const activeAction = async () => {
+    try {
+        loading.value.active = true;
+        await useAPI("admin/bank/account/active", JSON.parse(JSON.stringify(state.value)));
+        loading.value.active = false;
+        modal.value.active = false;
+        getList();
+        state.value._id = null;
+        state.value.option = null;
+        selectedOption.value = undefined;
+    } catch (e) {
+        loading.value.active = false;
+    }
+}
 // Fetch
 const getList = async () => {
     try {
