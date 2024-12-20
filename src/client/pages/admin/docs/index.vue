@@ -1,7 +1,7 @@
 <template>
   <UiContent title="Docs" size="2xl" sub="Quản lý các tài liệu API">
     <UiFlex class="mb-4">
-      <USelectMenu v-model="page.size" :options="[5, 10, 20, 50, 100]" class="mr-auto" />
+      <USelectMenu v-model="page.size" :options="[5, 10, 20, 50, 100]" class="mr-auto" size="sm" />
       <UButton color="primary" @click="modal.add = true">Thêm mới</UButton>
     </UiFlex>
 

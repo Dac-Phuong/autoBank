@@ -37,7 +37,7 @@
             <UiText weight="semibold">Thông tin kích hoạt</UiText>
           </template>
           <template #default>
-            <UiEmpty text="Chưa kích hoạt" />
+            <UiEmpty text="Chưa có dữ liệu kích hoạt" />
           </template>
         </UCard>
       </div>

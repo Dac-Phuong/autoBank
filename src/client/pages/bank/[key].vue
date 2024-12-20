@@ -3,7 +3,7 @@
     <UiContent title="Danh sách tài khoản" no-dot>
         <UiFlex class="mb-4" justify="between">
             <UiFlex>
-                <USelectMenu v-model="page.size" :options="option" />
+                <USelectMenu v-model="page.size" size="sm" :options="option" />
                 <UForm :state="page" @submit="getList" class="mr-4">
                     <UInput v-model="page.search.key" placeholder="Tìm kiếm..." icon="i-bx-search" size="sm"
                         class="ml-1" />

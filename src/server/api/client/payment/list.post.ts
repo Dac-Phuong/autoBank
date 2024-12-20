@@ -14,15 +14,11 @@ export default defineEventHandler(async (event) => {
 
     const match : any = { user: auth._id }
  
-    if (!!search.key) {
-      const regex = new RegExp(search.key, 'i');
-      match.$or = [
-        { code: regex },
-        { money: regex },
-        { 'user.account': regex },
-      ];
+    if(!!search.key){
+      if(search.by == 'CODE') match['code'] = { $regex : search.key.toLowerCase(), $options : 'i' }
+      if(search.by == 'MONEY') match['money'] = parseFloat(search.key)
     }
-    
+
     if(!!range && !!range['start'] && !!range['end']){
       match['createdAt'] = { $gte: new Date(range['start']), $lte: new Date(range['end']) }
     }

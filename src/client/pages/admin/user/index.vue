@@ -1,11 +1,11 @@
 <template>
     <UiContent title="User" size="2xl"  sub="Quản lý tài khoản người dùng">
         <UiFlex class="mb-4 gap-1">
-            <USelectMenu v-model="page.size" :options="[5, 10, 20, 50, 100]" />
+            <USelectMenu v-model="page.size" size="sm" :options="[5, 10, 20, 50, 100]" />
             <UForm :state="page" @submit="page.current = 1, getList()">
                 <UiFlex class="gap-1">
                     <UInput v-model="page.search.key" placeholder="Tìm kiếm..." icon="i-bx-search" size="sm" />
-                    <USelectMenu v-model="page.search.by" :options="['ACCOUNT', 'PHONE', 'MAIL']" />
+                    <USelectMenu v-model="page.search.by" :options="['ACCOUNT', 'PHONE', 'MAIL']" size="sm" />
                 </UiFlex>
             </UForm>
         </UiFlex>

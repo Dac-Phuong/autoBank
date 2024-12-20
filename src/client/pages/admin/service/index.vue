@@ -1,7 +1,7 @@
 <template>
     <UiContent title="Service" size="2xl" sub="Quản lý dịch vụ">
         <UiFlex class="mb-4 gap-1">
-            <USelectMenu v-model="page.size" :options="[5, 10, 20, 50, 100]" />
+            <USelectMenu v-model="page.size" :options="[5, 10, 20, 50, 100]" size="sm" />
             <UForm :state="page" @submit="page.current = 1, getList()">
                 <UiFlex class="gap-1">
                     <UInput v-model="page.search.key" placeholder="Tìm kiếm..." icon="i-bx-search" size="sm" />

@@ -8,14 +8,15 @@
             <LoadingTable v-if="loading.load" />
             <template #header>
                 <UiFlex>
-                    <USelectMenu v-model="page.size" :options="[5, 10, 20, 50, 100]" class="mr-1" />
-                    <UForm @submit="getList" class="max-w-[9rem] ml-auto">
-                        <UInput v-model="page.search.key" placeholder="Tìm kiếm..." icon="i-bx-search" size="sm">
-                        </UInput>
+                    <USelectMenu v-model="page.size" :options="[5, 10, 20, 50, 100]" size="sm" class="mr-1" />
+                    <USelectMenu class="ml-auto" size="sm" v-model="page.search.by" :options="['CODE', 'MONEY']" />
+                    <UForm @submit="getList" class="max-w-[9rem] ml-2">
+                        <UiFlex class="gap-1">
+                            <UInput v-model="page.search.key" placeholder="Tìm kiếm..."  icon="i-bx-search" size="sm" />
+                        </UiFlex>
                     </UForm>
                 </UiFlex>
             </template>
-
 
             <UTable v-model:sort="page.sort" :columns="columns" :rows="list">
                 <template #code-data="{ row }">
@@ -149,7 +150,7 @@ const page = ref({
     },
     search: {
         key: null,
-        by: 'code'
+        by: 'CODE'
     },
     range: {
         start: null,

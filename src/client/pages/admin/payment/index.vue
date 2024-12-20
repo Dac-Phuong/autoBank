@@ -1,11 +1,11 @@
 <template>
   <UiContent title="Payment" sub="Quản lý giao dịch nạp tiền">
     <UiFlex class="mb-4">
-      <USelectMenu v-model="page.size" :options="[5,10,20,50,100]" class="mr-2"/>
+      <USelectMenu v-model="page.size" :options="[5,10,20,50,100]" class="mr-2" size="sm"/>
       <UForm :state="page" @submit="getList" class="mr-4">
         <UiFlex>
           <UInput v-model="page.search.key" placeholder="Tìm kiếm..." icon="i-bx-search" size="sm" class="mr-1" />
-          <USelectMenu v-model="page.search.by" :options="['CODE', 'USER']" />
+          <USelectMenu v-model="page.search.by" :options="['CODE', 'USER']" size="sm"/>
         </UiFlex>
       </UForm>
     </UiFlex>
