@@ -165,14 +165,14 @@ watch(() => page.value.sort.direction, () => getList())
 watch(() => page.value.search.key, (val) => !val && getList())
 watch(() => props.refreshData, () => getList(), { deep: true })
 
-watch(() => page.value.range.start, (val) => {
-    if (!!val && !!page.value.range.end) return getList()
-    if (!val && !page.value.range.end) return getList()
-})
-watch(() => page.value.range.end, (val) => {
-    if (!!val && !!page.value.range.start) return getList()
-    if (!val && !page.value.range.start) return getList()
-})
+// watch(() => page.value.range.start, (val) => {
+//     if (!!val && !!page.value.range.end) return getList()
+//     if (!val && !page.value.range.end) return getList()
+// })
+// watch(() => page.value.range.end, (val) => {
+//     if (!!val && !!page.value.range.start) return getList()
+//     if (!val && !page.value.range.start) return getList()
+// })
 
 const statusFormat = {
     0: { label: 'Chờ thanh toán', color: 'orange' },

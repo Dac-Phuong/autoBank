@@ -146,7 +146,7 @@
                     </UiFlex>
                 </template>
                 <template #default>
-                    <UForm :state="stateEdit">
+                    <UForm :state="stateBuy">
                         <UiText class="pb-5" weight="semibold">Chọn gói kích hoạt</UiText>
                         <div v-if="options && options.options" class="grid grid-cols-2 md:grid-cols-3 gap-4">
                             <div v-for="(option, index) in options.options" :key="index"
@@ -241,6 +241,7 @@ const statusFormat: any = {
     1: { label: 'Chạy', color: 'green' },
     2: { label: 'Dừng', color: 'red' },
     3: { label: 'Hết hạn', color: 'red' },
+    4: { label: 'Sắp hết hạn', color: 'yellow' },
 }
 // Columns
 const columns = [
@@ -350,7 +351,13 @@ const actions = (row: any) => [
         label: row.status == 1 ? 'Dừng auto' : 'Chạy auto',
         icon: row.status == 1 ? 'iconamoon:player-stop-bold' : 'iconamoon:player-start-bold',
         click: () => runAction(row._id)
-    }]
+    },
+    ],
+    row.status === 4 ? [{
+        label: 'Gia hạn',
+        icon: 'material-symbols:sync',
+        click: () => getOption(row.bank[0], row._id)
+    }] : []
 ]
 
 // Fetch

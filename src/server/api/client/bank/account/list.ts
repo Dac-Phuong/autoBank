@@ -25,6 +25,8 @@ export default defineEventHandler(async (event) => {
 
     const sorting : any = {}
     sorting[sort.column] = sort.direction == 'desc' ? -1 : 1
+    const now = new Date()
+    await DB.BankAccount.updateMany({ user: auth._id, status: { $in: [1, 2] }, end_time: { $lt: now } },{ $set: { status: 3 } });
 
     const list = await DB.BankAccount.aggregate([
       { $match: match },

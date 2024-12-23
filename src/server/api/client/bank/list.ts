@@ -1,63 +1,68 @@
-import type { IAuth } from "~~/types"
-import resp from "../../../utils/resp"
+import { subDays } from "date-fns"
+import { IAuth } from "~~/types"
 
 export default defineEventHandler(async (event) => {
   try {
     const auth = await getAuth(event) as IAuth
-    if(!auth) throw 'Vui lòng đăng nhập trước'
+    if (!auth) throw 'Vui lòng đăng nhập trước'
 
     const { size, current, sort } = await readBody(event)
-    if(!size || !current) throw 'Dữ liệu phân trang sai'
-    if(!sort.column || !sort.direction) throw 'Dữ liệu sắp xếp sai'
+    if (!size || !current) throw 'Dữ liệu phân trang sai'
+    if (!sort.column || !sort.direction) throw 'Dữ liệu sắp xếp sai'
 
-    const sorting : any = { }
-    const match: any = {display: true}
+    const sorting: any = {}
+    const match: any = { display: true }
     sorting[sort.column] = sort.direction == 'desc' ? -1 : 1
 
+    const now = new Date()
+    const addDays = subDays(now, -5)
+
+    await DB.BankAccount.updateMany({ user: auth._id, status: { $in: [1, 2] }, expired_date: { $lte: addDays } }, { $set: { status: 4 } })
+
     const list = await DB.Bank
-    .aggregate([
-      { $match: match },
-      {
-        $lookup: {
-          from: "BankAccount",
-          let: { bankId: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$bank", "$$bankId"] },
-                    { $eq: ["$user", auth._id] }
-                  ]
+      .aggregate([
+        { $match: match },
+        {
+          $lookup: {
+            from: "BankAccount",
+            let: { bankId: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$bank", "$$bankId"] },
+                      { $eq: ["$user", auth._id] }
+                    ]
+                  }
                 }
               }
-            }
-          ],
-          as: "listAccount"
-        }
-      },
-      {
-        $project: {
-          name: 1,
-          key: 1,
-          image: 1,
-          status: 1,
-          updatedAt: 1,
-          createdAt: 1,
-          count: { 
-            $size: '$listAccount'
+            ],
+            as: "listAccount"
           }
-        }
-      },
-      { $sort: sorting },
-      { $skip: (current - 1) * size },
-      { $limit: size }
-    ])
+        },
+        {
+          $project: {
+            name: 1,
+            key: 1,
+            image: 1,
+            status: 1,
+            updatedAt: 1,
+            createdAt: 1,
+            count: {
+              $size: '$listAccount'
+            }
+          }
+        },
+        { $sort: sorting },
+        { $skip: (current - 1) * size },
+        { $limit: size }
+      ])
 
     const total = await DB.Bank.countDocuments()
     return resp(event, { result: { list, total } })
-  } 
-  catch (e:any) {
+  }
+  catch (e: any) {
     return resp(event, { code: 500, message: e.toString() })
   }
 })
