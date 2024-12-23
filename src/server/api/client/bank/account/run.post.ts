@@ -1,4 +1,3 @@
-import { stopCronJob } from "~~/src/server/utils/runAuto"
 import { IDBUser } from "~~/types"
 
 export default defineEventHandler(async (event) => {
