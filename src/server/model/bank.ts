@@ -31,6 +31,7 @@ export const DBBankAccount = (mongoose: Mongoose) => {
       start_date: { type: Date },
       expired_date: { type: Date },
       policy: { type: Boolean, default: true },
+      run: { type: Boolean, default: false },
       user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       bank: { type: mongoose.Schema.Types.ObjectId, ref: "Bank" },
     },

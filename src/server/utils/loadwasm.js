@@ -1,14 +1,33 @@
+
 const window = {
     globalThis,
     document: {
         welovemb: true
     }
-  };
-  
-  globalThis.window = window;
-  globalThis.location = new URL("https://online.mbbank.com.vn/pl/login");
-  
-  const processAsync = (param1, param2, generatorFunction) => {
+};
+
+globalThis.window = window;
+globalThis.location = new URL("https://online.mbbank.com.vn/pl/login");
+
+// import { JSDOM } from 'jsdom';
+// const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+//     url: 'https://online.mbbank.com.vn/pl/login',
+// });
+
+// const window = dom.window;
+// const document = window.document;
+
+// globalThis.window = window;
+// globalThis.document = document;
+// globalThis.location = window.location;
+// globalThis.history = {
+//     pushState: () => { },
+//     replaceState: () => { },
+//     go: () => { },
+//     back: () => { },
+// };
+
+const processAsync = (param1, param2, generatorFunction) => {
     return new Promise((resolve, reject) => {
         var handleResult = (result) => {
             try {
@@ -32,9 +51,8 @@ const window = {
             (generatorFunction = generatorFunction.apply(param1, param2)).next(),
         );
     });
-  }
-  
-  (() => {
+}
+(() => {
     const ErrENOSYS = () => {
         const err = new Error("not implemented");
         err.code = "ENOSYS";
@@ -102,10 +120,10 @@ const window = {
             "globalThis.TextDecoder is not available, polyfill required",
         );
     }
-  
+
     const TextEncoderUnicode = new TextEncoder("utf-8");
     const TextDecoderUnicode = new TextDecoder("utf-8");
-  
+
     globalThis.Go = class {
         constructor() {
             this.argv = ["js"];
@@ -121,7 +139,7 @@ const window = {
             this._pendingEvent = null;
             this._scheduledTimeouts = new Map();
             this._nextCallbackTimeoutID = 1;
-  
+
             const setMemoryValue = (address, value) => {
                 this.mem.setUint32(address + 0x0, value, true);
                 this.mem.setUint32(
@@ -130,7 +148,7 @@ const window = {
                     true,
                 );
             };
-  
+
             const getValueFromMemory = (address) => {
                 const floatValue = this.mem.getFloat64(address, true);
                 if (floatValue === 0) {
@@ -142,7 +160,7 @@ const window = {
                 const intValue = this.mem.getUint32(address, true);
                 return this._values[intValue];
             };
-  
+
             const setValueInMemory = (address, value) => {
                 if (typeof value === "number" && value !== 0) {
                     if (isNaN(value)) {
@@ -153,12 +171,12 @@ const window = {
                     }
                     return;
                 }
-  
+
                 if (value === undefined) {
                     this.mem.setFloat64(address, 0x0, true);
                     return;
                 }
-  
+
                 let id = this._ids.get(value);
                 if (id === undefined) {
                     id = this._idPool.pop();
@@ -170,7 +188,7 @@ const window = {
                     this._ids.set(value, id);
                 }
                 this._goRefCounts[id]++;
-  
+
                 let typeFlag = 0;
                 switch (typeof value) {
                     case "object":
@@ -187,60 +205,60 @@ const window = {
                     case "function":
                         typeFlag = 4;
                 }
-  
+
                 this.mem.setUint32(address + 0x4, 0x7ff80000 | typeFlag, true);
                 this.mem.setUint32(address, id, true);
             };
-  
+
             const getByteArrayFromMemory = (address) => {
                 const startAddress =
                     this.mem.getUint32(address + 0x0, true) +
                     0x100000000 * this.mem.getInt32(address + 0x4, true);
-  
+
                 const length =
                     this.mem.getUint32(address + 0x8, true) +
                     0x100000000 * this.mem.getInt32(address + 0xc, true);
-  
+
                 return new Uint8Array(
                     this._inst.exports.mem.buffer,
                     startAddress,
                     length,
                 );
             };
-  
+
             const getArrayFromMemory = (address) => {
                 const startAddress =
                     this.mem.getUint32(address + 0x0, true) +
                     0x100000000 * this.mem.getInt32(address + 0x4, true);
-  
+
                 const length =
                     this.mem.getUint32(address + 0x8, true) +
                     0x100000000 * this.mem.getInt32(address + 0xc, true);
-  
+
                 const array = new Array(length);
                 for (let i = 0; i < length; i++) {
                     array[i] = getValueFromMemory(startAddress + 0x8 * i);
                 }
-  
+
                 return array;
             };
-  
+
             const getStringFromMemory = (address) => {
                 const startAddress =
                     this.mem.getUint32(address + 0x0, true) +
                     0x100000000 * this.mem.getInt32(address + 0x4, true);
-  
+
                 const length =
                     this.mem.getUint32(address + 0x8, true) +
                     0x100000000 * this.mem.getInt32(address + 0xc, true);
-  
+
                 return TextDecoderUnicode.decode(
                     new DataView(this._inst.exports.mem.buffer, startAddress, length),
                 );
             };
-  
+
             const timeDifference = Date.now() - performance.now();
-  
+
             this.importObject = {
                 _gotest: {
                     add: (a, b) => a + b,
@@ -261,13 +279,13 @@ const window = {
                             this.mem.getUint32(0x8 + (address >>>= 0x0) + 0x0, true) +
                             0x100000000 *
                             this.mem.getInt32(0x8 + (address >>>= 0x0) + 0x4, true);
-  
+
                         const dataAddress =
                             this.mem.getUint32(address + 0x10 + 0x0, true) +
                             0x100000000 * this.mem.getInt32(address + 0x10 + 0x4, true);
-  
+
                         const dataLength = this.mem.getInt32(address + 0x18, true);
-  
+
                         fs.writeSync(
                             fileDescriptor,
                             new Uint8Array(
@@ -587,14 +605,14 @@ const window = {
             };
         }
     };
-  })();
-  
-  module.exports = function (wasmBytes, requestData, args1) {
+})();
+
+export default function (wasmBytes, requestData, args1) {
     return processAsync(this, null, function* () {
         const go = new Go();
-        const instance = (yield WebAssembly.instantiate(wasmBytes, go.importObject))
-            .instance;
+        const instance = (yield WebAssembly.instantiate(wasmBytes, go.importObject)).instance;
         go.run(instance);
         return globalThis.bder(JSON.stringify(requestData), args1);
     });
-  }
+}
+

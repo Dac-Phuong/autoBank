@@ -7,10 +7,10 @@ export default defineNuxtConfig({
   serverDir: join(__dirname, './src/server'),
 
   nitro: {
-    output: { 
+    output: {
       dir: './dist/server',
-      serverDir: './dist/server/core', 
-      publicDir: './dist/server/public' 
+      serverDir: './dist/server/core',
+      publicDir: './dist/server/public'
     }
   },
 
@@ -19,7 +19,7 @@ export default defineNuxtConfig({
     mongoURI: process.env.MONGO_URI,
     mongoDB: process.env.MONGO_DB,
     apiSecret: process.env.SECRET,
-    
+
     public: {
       dev: process.env.NODE_ENV === 'production' ? false : true,
       clientURL: process.env.CLIENT_URL,
@@ -33,14 +33,14 @@ export default defineNuxtConfig({
     }
   },
   modules: ['@nuxt/ui',
-    '@pinia/nuxt', 
-    '@nuxt/icon', 
-    '@nuxt/image', 
+    '@pinia/nuxt',
+    '@nuxt/icon',
+    '@nuxt/image',
     ['@nuxtjs/google-fonts', {
       display: 'swap',
       download: true,
       families: {
-        Montserrat: [400,500,600,700]
+        Montserrat: [400, 500, 600, 700]
       }
     }],
   ],

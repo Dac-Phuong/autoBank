@@ -16,18 +16,16 @@ export default defineEventHandler(async (event) => {
     if (!bank) throw 'Không tìm thấy ngân hàng'
 
     const status = check.status === 1 ? 2 : 1
-    await DB.BankAccount.findOneAndUpdate({ _id: check._id }, { $set: { status, time: new Date() } }, { new: true })
+    const run = status === 1 ? true : false
+    await DB.BankAccount.findOneAndUpdate({ _id: check._id }, { $set: { status, run, time: new Date() } }, { new: true })
 
-    const data = await DB.BankAccount.find({ user: user._id, status: { $in: [1, 2] }, bank: check.bank }).select('status username account password bank path expired_date')
-    
-    for (const item of data) {
-      if (item.status == 1) {
-        await runAuto(item)
-      } else {
-        stopCronJob(item.account);
-      }
-    }
+    const data = await DB.BankAccount.find({ user: user._id, status: { $in: [1, 2] }, bank: check.bank }).select('status username run account password bank path expired_date')
 
+    await Promise.all(data.map(item => {
+      if (item.status == 1 && item.run) return runAuto(item);
+      if (item.status == 2 && !item.run) return stopCronJob(item.account);
+      return Promise.resolve();
+    }))
     return resp(event, { message: 'Chuyển trạng thái thành công' })
   }
   catch (e: any) {

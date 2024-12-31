@@ -26,6 +26,7 @@ export interface IDBBankAccount {
   option: Object
   status: Number;
   path: string;
+  run: boolean
   start_date: Date
   expired_date: Date
 }
